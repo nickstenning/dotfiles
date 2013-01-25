@@ -1,0 +1,26 @@
+#!/bin/sh
+
+#
+# gdslog: manage my GDS work log
+#
+
+set -eu
+
+: ${NOTESDIR:="$HOME/Dropbox/data/notes"}
+
+LOGFILE="${NOTESDIR}/GDS log.txt"
+
+if ! which gdate >/dev/null; then
+  echo "gdslog requires GNU date (brew install coreutils)" >&2
+  exit 1
+fi
+
+if [ "$#" -eq "0" ]; then
+  DT=$(gdate "+%Y-%m-%d")
+  printf "${DT} "
+  read LINE
+  [ -n "$LINE" ] && echo "${DT} ${LINE}" >> "$LOGFILE"
+else
+  MATCH=$(gdate --date="$*" "+%Y-%m-%d")
+  [ "$?" = "0" ] && egrep "^${MATCH}" "$LOGFILE"
+fi

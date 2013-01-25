@@ -1,0 +1,40 @@
+#!/usr/bin/env python
+
+from __future__ import print_function
+
+import random
+import sys
+
+def passphrases(l=4, n=10):
+    with open('/usr/share/dict/words') as w:
+        words = [line.strip() for line in w if line == line.lower() and len(line) < 9]
+
+    length = len(words)
+    choices = [random.randrange(length) for _ in xrange(l * n)]
+    chosen = []
+
+    for i, line in enumerate(words):
+        if i in choices:
+            chosen.append(line)
+
+    random.shuffle(chosen)
+
+    while chosen:
+        passphrase, chosen = chosen[:l], chosen[l:]
+        print(' '.join(passphrase))
+
+if __name__ == '__main__':
+
+    l = 4
+    n = 10
+
+    if len(sys.argv) > 3:
+        print("Usage: passphrase <length> <number>")
+        sys.exit(1)
+    elif len(sys.argv) == 3:
+        l = int(sys.argv[1])
+        n = int(sys.argv[2])
+    elif len(sys.argv) == 2:
+        l = int(sys.argv[1])
+
+    passphrases(l, n)

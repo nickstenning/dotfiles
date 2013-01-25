@@ -1,0 +1,11 @@
+#!/usr/bin/env python
+
+import random
+import sys
+
+lines = [line.strip() for line in sys.stdin]
+
+num = int(sys.argv[1], 10) if len(sys.argv) > 1 else 1
+
+for _ in xrange(num):
+    print random.choice(lines)

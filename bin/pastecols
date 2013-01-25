@@ -1,0 +1,23 @@
+#!/bin/bash
+
+#
+# pastecols: like paste(1), but pastes only a specified column from multiple
+# files -- extracts the specified column from the list of files passed to it
+# and concatenates the columns, like paste(1).
+#
+
+set -eu
+
+if [ "$#" -lt 1 ]; then
+  echo "Usage: $(basename "$0") <colno> [FILE, [FILE, [FILE, ...]]]" >&2
+  exit 1
+fi
+
+COL="${1}"
+shift
+
+cmd="paste"
+for i in ${*}; do
+  cmd="${cmd} <(awk '{print \$${COL}}' ${i})"
+done
+eval $cmd

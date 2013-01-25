@@ -1,0 +1,25 @@
+[ -z "$PS1" ] && return
+
+ZSH=$HOME/code/dotfiles/zsh
+
+# Report timing statistics for long-running processes
+REPORTTIME=5
+TIMEFMT="%J  %U user %S system %P cpu %MM memory %*E total"
+
+# Load and run compinit
+autoload -U compinit
+compinit -i
+
+# add a function path
+fpath=($ZSH/completions $fpath)
+
+# allow adding hooks in main files
+autoload -U add-zsh-hook
+
+# load main files
+for file ($ZSH/lib/*.zsh(.xN)) source $file
+
+# write path to mac environment file 
+if which defaults >/dev/null; then 
+  defaults write ~/.MacOSX/environment PATH "$PATH"
+fi

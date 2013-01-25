@@ -1,0 +1,74 @@
+##
+## ZSH environment setup (.zshenv)
+##
+zdotdir=$HOME
+
+umask u=rwx,g=rx,o=rx
+setopt noglobalrcs
+
+# Set path to contain only unique elements, and then set a sensible default.
+typeset -U path
+path=( ~/.rbenv/bin(N)
+       ~/local/{,s}bin(N)
+       ~/code/go/bin
+       /usr/texbin
+       /usr/local/share/python
+       /usr/local/share/python3
+       /usr/local/share/npm/bin
+       /usr/local/{,s}bin(N)
+       /usr/{,s}bin(N)
+       /{,s}bin(N)
+     )
+
+export EMAIL="Nick Stenning <nick@whiteink.com>"
+export MAILDIR="${HOME}/.mail"
+export NOTESDIR="${HOME}/Dropbox/data/notes"
+
+# Keychain
+export KEYCHAIN_DEFAULT_KEYS="id_rsa D1BEB004"
+
+# Editor
+export EDITOR="e"
+export TEXEDIT="${EDITOR} +%d %s"
+export LESSEDIT="${EDITOR} ?lm+%lm. %f"
+export PAGER="less"
+export LESS="-R --ignore-case --long-prompt"
+
+# Set UTF8 for terminals
+unset LC_ALL
+export LANG="en_GB.UTF-8"
+export LC_COLLATE="C"
+
+# Even if you're on BSD, you'll want to leave the Linux version here for zsh
+# colour completion.
+export LS_COLORS="no=00:fi=00:di=33:ln=36:ex=00;31:pi=35;40:so=35;40:bd=35;40:cd=35;40"
+export LSCOLORS="dxgxfafabxfafaxbxbadad"
+
+# Gnuplot
+export GNUPLOT_LIB="${HOME}/.gnuplot.d:${GNUPLOT_LIB}"
+
+# pkg-config
+typeset -T PKG_CONFIG_PATH pkg_config_path
+typeset -U pkg_config_path
+pkg_config_path=( /usr{/local,}/*/lib/pkgconfig(/N) $pkg_config_path )
+export PKG_CONFIG_PATH
+
+# Node config
+export NODE_PATH="${NODE_PATH}:/usr/local/lib/node_modules"
+
+# Virtualenv
+export WORKON_HOME="${HOME}/code/venv"
+export VIRTUALENV_USE_DISTRIBUTE="yes"
+
+# rbenv
+if which rbenv >/dev/null; then eval "$(rbenv init -)"; fi
+
+# Go
+export GOPATH="${HOME}/code/go:${GOPATH}"
+
+# Git
+export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
+
+# ghtools
+export GITHUB_GDS_API_ROOT=https://github.gds/api/v3
+export GITHUB_GDS_CA_BUNDLE=/Volumes/gds/govuk/deployment/creds/ssl/github_gds/github_gds.crt

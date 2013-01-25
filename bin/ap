@@ -1,0 +1,16 @@
+#!/bin/sh
+
+#
+# ap: print out information about named processes
+#
+
+set -eu
+
+if [ "$#" = "0" ]; then
+  echo "Usage: $(basename "$0") <pattern>" >&2
+  exit 1
+fi
+
+PIDS=$(pgrep "$@" | xargs)
+
+[ -n "$PIDS" ] && ps -wwwp $PIDS

@@ -1,0 +1,23 @@
+# ==============================================================================
+# SCREEN SETTINGS
+# ==============================================================================
+
+# Automatically detach on hangup. 
+autodetach on
+
+# Don't display the copyright page
+startup_message off
+
+# Change default scrollback value for new windows
+defscrollback 65535
+
+# Store buffer in home directory
+bufferfile $HOME/.screen_exchange
+
+# emulate .logout message
+pow_detach_msg "Screen session of \$LOGNAME \$:cr:\$:nl:ended."
+
+hardstatus alwayslastline " %c | %Y%m%d | %w " 
+
+defutf8 on
+

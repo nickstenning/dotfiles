@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -eu
+
+BACKUPDIR="${HOME}/Dropbox/archive/backups/bookmarks"
+CHROME_BOOKMARKS="${HOME}/Library/Application Support/Google/Chrome/Default/Bookmarks"
+CHROME_BACKUPFILE="${BACKUPDIR}/bookmarks_chrome_$(date '+%Y%m%d').json"
+
+mkdir -p "${BACKUPDIR}"
+cp "${CHROME_BOOKMARKS}" "${CHROME_BACKUPFILE}"
+
+# Remove all but the most recent fortnight's backups.
+cd "${BACKUPDIR}"
+ls -t | tail -n+14 | xargs rm

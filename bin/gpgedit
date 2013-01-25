@@ -1,0 +1,109 @@
+#!/bin/sh
+
+#
+# gpgedit: edit an encrypted file with an associated list of recipients
+#
+#     $ gpgedit secrets.gpg [gpg args]
+#
+# gpgedit needs the companion file "secrets.rcp" to exist, and contains a list
+# of intended recipients, one per line. The recipient file can contain end-of-
+# line comments, starting with the "#" character.
+#
+# If you don't have the public keys for one or more intended recipients in
+# your keyring, this script will throw an error and abort early.
+#
+# Example contents of secrets.rcp:
+#
+#     $ cat >secrets.rcp <<EOM
+#     1E57F9A5 # John Doe
+#     AC56C90A # Jane Doe
+#     EOM
+#
+# You can pass additional args to gpg by passing additional args to gpgedit.
+# This will be useful if you have multiple secret keys and need to specify
+# which one to use when signing the encrypted file. For example:
+#
+#     $ gpgedit secrets.gpg -u 1E57F9A5
+#
+
+set -eEu
+
+status () {
+  echo "---> $@" >&2
+}
+
+error () {
+  echo "ERROR: $@" >&2
+}
+
+if [ "$#" -lt "1" ]; then
+  echo "Usage: gpgedit <filename.gpg> [gpg args]" >&2
+  exit 1
+fi
+
+ENCFILE="$1"
+DECFILE="${ENCFILE%.gpg}"
+
+shift
+GPGARGS="$@"
+
+if [ "$ENCFILE" = "$DECFILE" ]; then
+  error "filename must have .gpg extension"
+  exit 1
+fi
+
+RCPFILE="$DECFILE.rcp"
+
+if [ ! -f "$RCPFILE" ]; then
+  error "expecting a list of recipients, one per line, in $RCPFILE"
+  exit 1
+fi
+
+RCPS=$(<"$RCPFILE" cut -d"#" -f1 | grep -v '^\s*$')
+
+MISSING_KEYS=""
+while read line; do
+  if ! gpg $GPGARGS --list-public-keys "${line}" >/dev/null 2>&1; then
+    error "you don't have a public key for recipient '$line' in your GPG keyring."
+    MISSING_KEYS="${MISSING_KEYS} '${line}'"
+  fi
+done <<EOM
+  $RCPS
+EOM
+
+if [ -n "$MISSING_KEYS" ]; then
+  error "Try running the following to fetch the missing keys from a keyserver:"
+  error "    gpg --recv-keys${MISSING_KEYS}"
+  exit 1
+fi
+
+cleanup () {
+  rm -f "$DECFILE"
+}
+trap cleanup EXIT
+
+if [ -f "$ENCFILE" ]; then
+  status "Decrypting file"
+  gpg $GPGARGS --decrypt <"$ENCFILE" >"$DECFILE"
+else
+  status "Creating new file"
+fi
+
+$EDITOR "$DECFILE"
+
+RCPARGS="$(echo "$RCPS" | while read line; do
+             echo "-r ${line}"
+           done | xargs)"
+
+status "Encrypting file"
+
+if gpg $GPGARGS --armor --encrypt --sign $RCPARGS <"$DECFILE" >"${ENCFILE}.tmp"; then
+  mv "${ENCFILE}.tmp" "$ENCFILE"
+  status "Successfully encrypted file"
+else
+  rm -f "${ENCFILE}.tmp"
+  error "failed to encrypt file! Not overwriting original..."
+  status "Deleting unencrypted file, printing contents to STDERR so they're not lost:"
+  cat "$DECFILE" >&2
+  exit 1
+fi

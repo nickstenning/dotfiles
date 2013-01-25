@@ -1,0 +1,48 @@
+#!/bin/sh
+
+#
+# pidtree: given a list of pids, print all child processes and their pids in a
+# greppable tree format
+#
+
+set -eu
+
+if [ -z "$1" ]; then
+  echo "Usage: $(basename "$0") [PID [PID [PID]...]]"
+  exit 1
+fi
+
+PRINT_ARGS=1
+
+child_pids () {
+  local ppid=$1
+  ps -e -opid=,ppid= | grep " ${ppid}$" | awk '{print $1}' | xargs
+}
+
+descend_tree () {
+  local pid
+  local parents="$*"
+
+  # "for" with no "in" iterates over args, so this trick sets pid to the value
+  # of the last arg
+  for pid; do true; done
+
+  printf "$parents"
+  [ -n "$PRINT_ARGS" ] && printf "\t$(ps -p"$pid" -oargs=)"
+  printf "\n"
+
+  [ "$$" = "$pid" ] && return
+
+  for p in $(child_pids $pid); do
+    descend_tree $parents $p
+  done
+}
+
+if [ "$1" = "-q" ]; then
+  shift
+  PRINT_ARGS=
+fi
+
+for ROOT_PID in $@; do
+  descend_tree $ROOT_PID
+done

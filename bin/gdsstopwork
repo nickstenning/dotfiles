@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -eu
+
+echo "Stopped work at $(date "+%H:%M")" | gdslog >/dev/null
+cd /Volumes/gds/govuk/development
+vagrant halt
+cd "$HOME"
+sleep 5
+hdiutil unmount /Volumes/gds

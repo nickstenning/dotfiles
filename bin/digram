@@ -1,0 +1,15 @@
+#!/bin/sh
+
+#
+# digram: hacky script to translate a digram on stdin into the corresponding
+# unicode character
+#
+
+set -eu
+
+read digram
+
+tmpf=$(mktemp digram.XXXXXX)
+ex +'norm i<C-K>'"$digram" +'wq' -s "$tmpf"
+cat "$tmpf"
+rm "$tmpf"

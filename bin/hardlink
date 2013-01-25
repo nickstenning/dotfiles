@@ -1,0 +1,25 @@
+#!/bin/sh
+
+#
+# hardlink: hardlink duplicate files in a directory
+#
+
+set -eu
+
+SEP="@@@"
+
+if [ "$1" = "-n" ]; then
+  DRY_RUN=1
+  shift
+fi
+
+duff -rp -f "$SEP" $@ | while read LINE; do
+  if [ "$LINE" = "$SEP" ]; then
+    read LINKTO
+  else
+    echo ln -f "$LINKTO" "$LINE"
+    if [ -z "$DRY_RUN" ]; then
+      ln -f "$LINKTO" "$LINE"
+    fi
+  fi
+done

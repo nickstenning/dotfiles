@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -eu
+
+USER="nick.stenning"
+PASS=$(gpg --no-tty -d ~/.secret/dme-password.gpg)
+RECORD=$(gpg --no-tty -d ~/.secret/dme-record-id.gpg)
+IP=$(curl -s http://whiteink.com/util/ip)
+
+printf "Update IP to '${IP}'? (y/n) "
+read REPLY
+
+case "$REPLY" in
+  y*|Y*)
+    echo "Making request... response:" >&2
+    exec curl -s "https://www.dnsmadeeasy.com/servlet/updateip?username=${USER}&password=${PASS}&id=${RECORD}&ip=${IP}"
+    ;;
+  *)
+    echo "Aborted." >&2
+    exit 1
+    ;;
+esac

@@ -1,0 +1,55 @@
+[color]
+	ui = auto
+[alias]
+	ca = commit -av
+	ci = commit -v
+	cim = commit -v -m
+	co = checkout
+	d = diff --color-words
+	ds = diff --color-words --stat
+	dc = diff --color-words --cached
+	dcs = diff --color-words --stat --cached
+	br = branch -v
+	l = log --decorate --abbrev-commit
+	ls = log --decorate --abbrev-commit --stat
+	lt = log --decorate --abbrev-commit --oneline --graph --date=relative
+	sm = submodule
+	wc = whatchanged --decorate --abbrev-commit
+	s = status -sb
+	st = status -sb
+	alias = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\\t => \\2/' | sort
+	p = pull
+	pr = pull --rebase
+	au = add -u
+	aa = add -A
+	ap = add -p
+	lp = log --decorate --abbrev-commit --patch
+	roh = rebase -i origin/HEAD
+[user]
+	name = Nick Stenning
+	email = nick@whiteink.com
+	signingkey = nick@whiteink.com
+[core]
+	whitespace = fix
+	excludesfile = ~/.gitignore
+[apply]
+	whitespace = fix
+[branch]
+	autosetupmerge = true
+[color "branch"]
+	remote = yellow
+[color "status"]
+	added = green
+	untracked = red
+	changed = yellow
+	updated = green
+[difftool "Kaleidoscope"]
+	cmd = ksdiff-wrapper git \"$LOCAL\" \"$REMOTE\"
+[difftool]
+	prompt = false
+[diff]
+	tool = Kaleidoscope
+[push]
+	default = upstream
+[hub]
+	host = github.gds

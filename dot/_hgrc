@@ -1,0 +1,22 @@
+[ui]
+username = Nick Stenning <nick@whiteink.com>
+
+[extensions]
+color=
+hgext.record=
+hgext.bookmarks=
+hgext.fetch=
+rebase=
+pager=
+hggit=
+
+[pager]
+pager = LESS='FSRX' less
+
+[color]
+status.modified = yellow
+status.added = green
+status.removed = red
+status.deleted = cyan
+status.unknown = blue
+# status.ignored = gray

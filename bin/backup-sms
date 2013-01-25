@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -eu
+
+BACKUPDIR="${HOME}/Dropbox/archive/backups/sms"
+DBS_IN="${HOME}/Library/Application Support/MobileSync/Backup"
+
+mkdir -p "${BACKUPDIR}"
+
+fgrep -ailR 'msg_group' "${DBS_IN}" | while read file; do
+  device_id="$(basename "$(dirname "${file}")")"
+  cp "${file}" "${BACKUPDIR}/smsdb_${device_id}_$(date '+%Y%m%d').sqlite3"
+done
+
+# Remove all but the most recent fortnight's backups. (Or the most recent 14, 
+# if you're not backing up every day.)
+pushd "${BACKUPDIR}" >/dev/null
+ls -t | tail -n+28 | xargs rm
+popd >/dev/null

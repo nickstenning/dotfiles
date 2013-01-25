@@ -1,0 +1,12 @@
+#!/usr/bin/env osascript
+--
+-- ofadd: add tasks to OmniFocus
+-- (action! @context ::project #start #due $duration //note)
+--
+on run argv
+tell application "OmniFocus"
+  tell default document
+    parse tasks with transport text "" & argv
+  end tell
+end tell
+end run

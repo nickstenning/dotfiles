@@ -1,0 +1,2 @@
+#!/bin/sh
+exec "$(app Mathematica)/Contents/MacOS/MathKernel" $@

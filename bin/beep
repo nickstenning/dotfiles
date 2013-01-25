@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -eu
+
+printf "\a"
+if [ -n "$1" ]; then
+  for i in $(seq "$(($1 - 1))"); do
+    sleep 1
+    printf "\a"
+  done
+fi

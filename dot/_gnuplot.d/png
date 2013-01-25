@@ -1,0 +1,2 @@
+# colors bg fg grid l1 l2 l3 l4 l5 l6 l7 l8
+set terminal png x000000 xffffff x333333 xffff00 xff9f00 xff003f x9400ff x3333ff xff00ff x00ffea x3fff50 enhanced

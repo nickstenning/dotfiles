@@ -1,0 +1,14 @@
+#!/bin/sh
+
+#
+# pypi: dump json info for the specified PyPI package
+#
+
+set -eu
+
+if [ -z "$1" ]; then
+  echo "Usage: $(basename "$0") <packagename>" >&2
+  exit 1
+fi
+
+exec curl -s "http://pypi.python.org/pypi/${1}/json"
