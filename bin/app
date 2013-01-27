@@ -1,9 +1,0 @@
-#!/usr/bin/env osascript
---
--- app: print path to application
---
-
-on run argv
-  set res to the POSIX path of (path to app ("" & argv))
-  copy res to stdout
-end run
