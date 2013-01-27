@@ -1,11 +1,10 @@
-HERE=$(pwd)
+redo-ifchange ../util.sh tolink
 
-find . -maxdepth 1 -name '_*' | while read filename; do
-  SRC="${HERE}/${filename##./}"
-  DEST="${HOME}/.${filename##./_}"
-  if [ -r "${DEST}" ] && [ ! -h "${DEST}" ]; then
-    echo "${DEST} exists and not a symlink, skipping..." >&2
-  else
-    ln -snf ${SRC} ${DEST}
-  fi
-done
+. ../util.sh
+
+while read filename; do
+  SRC="$(pwd)/${filename}"
+  DST="${HOME}/.${filename#_}"
+  echo "linking $SRC to $DST" >&2
+  careful_link "$SRC" "$DST"
+done <tolink
