@@ -71,10 +71,6 @@ export GOPATH="${HOME}/code/go:${GOPATH}"
 # Git
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 
-# ghtools
-export GITHUB_GDS_API_ROOT=https://github.gds/api/v3
-export GITHUB_GDS_CA_BUNDLE=/Volumes/gds/govuk/deployment/creds/ssl/github_gds/github_gds.crt
-
 # z
 if which brew >/dev/null; then
   . "$(brew --prefix)/etc/profile.d/z.sh"
