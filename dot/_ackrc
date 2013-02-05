@@ -9,3 +9,4 @@
 # --pager=less
 --ignore-dir=.bundle
 --ignore-dir=.gems
+--ignore-dir=.tox
