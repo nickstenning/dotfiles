@@ -7,4 +7,5 @@ cd /Volumes/gds/govuk/development
 vagrant halt
 cd "$HOME"
 sleep 5
+mount | grep encfs | awk '{ print $1 }' | xargs -n1 umount
 hdiutil unmount /Volumes/gds
