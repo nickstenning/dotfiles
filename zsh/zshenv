@@ -80,3 +80,8 @@ fi
 if [ -f /usr/local/opt/autoenv/activate.sh ]; then
   . /usr/local/opt/autoenv/activate.sh
 fi
+
+# virtualenvwrapper
+if [ -f /usr/local/share/python/virtualenvwrapper_lazy.sh ]; then
+  . /usr/local/share/python/virtualenvwrapper_lazy.sh
+fi

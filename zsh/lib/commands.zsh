@@ -47,15 +47,6 @@ pathrm () {
   path[$path[(i)$1]]=()
 }
 
-workon () {
-  if [ ! -e "$(which virtualenvwrapper.sh)" ]; then
-    echo "virtualenvwrapper not installed!" >&2
-  else
-    source "$(which virtualenvwrapper.sh)"
-    workon $@
-  fi
-}
-
 # Powerful mv workalike.
 autoload -U zmv
 alias zmv="noglob zmv"
