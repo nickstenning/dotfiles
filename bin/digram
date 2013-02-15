@@ -10,6 +10,6 @@ set -eu
 read digram
 
 tmpf=$(mktemp digram.XXXXXX)
-ex +'norm i<C-K>'"$digram" +'wq' -s "$tmpf"
+vim -E +'norm i'"$digram" +'wq' -s "$tmpf"
 cat "$tmpf"
 rm "$tmpf"
