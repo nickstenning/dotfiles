@@ -11,4 +11,4 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-exec curl -s "http://pypi.python.org/pypi/${1}/json"
+exec curl -sL "https://pypi.python.org/pypi/${1}/json"
