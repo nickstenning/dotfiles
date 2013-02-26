@@ -8,13 +8,8 @@ setopt noglobalrcs
 
 # Set path to contain only unique elements, and then set a sensible default.
 typeset -U path
-path=( ~/.rbenv/bin(N)
-       ~/local/{,s}bin(N)
-       ~/code/go/bin
+path=( ~/local/{,s}bin(N)
        /usr/texbin
-       /usr/local/share/python
-       /usr/local/share/python3
-       /usr/local/share/npm/bin
        /usr/local/{,s}bin(N)
        /usr/{,s}bin(N)
        /{,s}bin(N)
@@ -47,41 +42,59 @@ export LSCOLORS="dxgxfafabxfafaxbxbadad"
 # Gnuplot
 export GNUPLOT_LIB="${HOME}/.gnuplot.d:${GNUPLOT_LIB}"
 
-# pkg-config
-typeset -T PKG_CONFIG_PATH pkg_config_path
-typeset -U pkg_config_path
-pkg_config_path=( /usr{/local,}/*/lib/pkgconfig(/N) $pkg_config_path )
-export PKG_CONFIG_PATH
-
-# Node config
-export NODE_PATH="${NODE_PATH}:/usr/local/lib/node_modules"
-
 # Virtualenv
-export WORKON_HOME="${HOME}/code/venv"
 export VIRTUALENV_USE_DISTRIBUTE="yes"
-
-# rbenv
-if which rbenv >/dev/null; then 
-  eval "$(rbenv init -)"
-fi
 
 # Go
 export GOPATH="${HOME}/code/go:${GOPATH}"
+path=( ~/code/go/bin(N) $path )
 
 # Git
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 
-# z
+dot () {
+  [ -f "$1" ] && . "$1"
+}
+
+# boxen
+dot /opt/boxen/env.sh
+
 if which brew >/dev/null; then
-  . "$(brew --prefix)/etc/profile.d/z.sh"
+  BREW_PREFIX=$(brew --prefix)
+
+  path=(
+    $BREW_PREFIX/share/python
+    $BREW_PREFIX/share/python3
+    $BREW_PREFIX/share/npm/bin
+    $path
+  )
+
+  # autoenv
+  dot "$BREW_PREFIX/opt/autoenv/activate.sh"
+  # virtualenv
+  dot "$BREW_PREFIX/share/python/virtualenvwrapper_lazy.sh"
+  # z
+  dot "$BREW_PREFIX/etc/profile.d/z.sh"
+
+  # pkg-config
+  typeset -T PKG_CONFIG_PATH pkg_config_path
+  typeset -U pkg_config_path
+  pkg_config_path=( $BREW_PREFIX/{lib,share}/pkgconfig(/N) $pkg_config_path )
+  export PKG_CONFIG_PATH
 fi
 
-# autoenv
-if [ -f /usr/local/opt/autoenv/activate.sh ]; then
-  . /usr/local/opt/autoenv/activate.sh
+if [ -f "$BOXEN_NVM_DIR/nvm.sh" ]; then
+  . "$BOXEN_NVM_DIR/nvm.sh"
+  nvm use "$BOXEN_NVM_DEFAULT_VERSION" >/dev/null
 fi
 
-# virtualenvwrapper
-if [ -f /usr/local/share/python/virtualenvwrapper_lazy.sh ]; then
-  . /usr/local/share/python/virtualenvwrapper_lazy.sh
+# boxen fallbacks
+if [ -z "$BOXEN_HOME" ]; then
+  # Node config
+  export NODE_PATH="${NODE_PATH}:/usr/local/lib/node_modules"
+
+  # rbenv
+  if which rbenv >/dev/null; then
+    eval "$(rbenv init -)"
+  fi
 fi
