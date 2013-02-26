@@ -33,3 +33,4 @@ zstyle ':completion:*:*:*:users' ignored-patterns '_*'
 zstyle '*' single-ignored show
 
 compdef pkill=killall
+compdef hub=git
