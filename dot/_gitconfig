@@ -1,5 +1,4 @@
-[color]
-	ui = auto
+# vim:noet:
 [alias]
 	ca = commit -av
 	ci = commit -v
@@ -30,12 +29,14 @@
 	email = nick@whiteink.com
 	signingkey = nick@whiteink.com
 [core]
+	excludesfile = /opt/boxen/config/git/gitignore
 	whitespace = fix
-	excludesfile = ~/.gitignore
 [apply]
 	whitespace = fix
 [branch]
 	autosetupmerge = true
+[color]
+	ui = auto
 [color "branch"]
 	remote = yellow
 [color "status"]
@@ -51,5 +52,9 @@
 	tool = Kaleidoscope
 [push]
 	default = upstream
+[include]
+	path = ~/.localgitconfig
 [hub]
-	host = github.gds
+	protocol = https
+[credential]
+	helper = /opt/boxen/bin/boxen-git-credential
