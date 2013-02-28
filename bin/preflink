@@ -1,0 +1,12 @@
+#!/bin/sh
+if [ "$1" = "-f" ]; then
+  FORCE="-f"
+fi
+
+ls ~/Dropbox/data/prefs | while read file; do
+  ln -sn $FORCE "$HOME/Dropbox/data/prefs/$file" "$HOME/Library/Preferences/$file"
+done
+
+ls ~/Dropbox/data/appsupport | while read file; do
+  ln -sn $FORCE "$HOME/Dropbox/data/appsupport/$file" "$HOME/Library/Application Support/$file"
+done
