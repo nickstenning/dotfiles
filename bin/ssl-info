@@ -1,0 +1,11 @@
+#!/bin/sh
+
+HOST=${1}
+PORT=${2:-443}
+
+if [ -z "$HOST" ]; then
+  echo "Usage: $(basename "$0") <host> [port]" >&2
+  exit 1
+fi
+
+openssl s_client -connect "$HOST:$PORT" </dev/null 2>/dev/null | openssl x509 -noout -text
