@@ -90,8 +90,9 @@ fi
 
 # boxen fallbacks
 if [ -z "$BOXEN_HOME" ]; then
-  # Node config
-  export NODE_PATH="${NODE_PATH}:/usr/local/lib/node_modules"
+
+  # node/nvm
+  dot "$HOME/.nvm/nvm.sh"
 
   # rbenv
   if which rbenv >/dev/null; then
