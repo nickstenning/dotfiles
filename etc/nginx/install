@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -eu
+
+cd "$(dirname "$0")"
+
+CONF_DIR="$(brew --prefix)/etc/nginx"
+ROOT_DIR="$(brew --prefix)/var/www"
+
+if [ -e "$CONF_DIR" -a ! -L "$CONF_DIR" ]; then
+  echo "$CONF_DIR already exists and not a link: leaving it alone!" >&2
+else
+  ln -snf "$PWD" "$CONF_DIR"
+fi
+
+if [ -e "$ROOT_DIR" -a ! -L "$ROOT_DIR" ]; then
+  echo "$ROOT_DIR already exists and not a link: leaving it alone!" >&2
+else
+  ln -snf "$HOME/Sites" "$ROOT_DIR"
+fi
+
+sudo mkdir -p /Library/LaunchDaemons
+sudo cp homebrew.mxcl.nginx.plist /Library/LaunchDaemons/
+sudo launchctl load -w /Library/LaunchDaemons/homebrew.mxcl.nginx.plist
