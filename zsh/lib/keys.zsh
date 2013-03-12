@@ -41,8 +41,8 @@ bindkey "\e\e[D" backward-word # alt-leftarrow
 if [[ -e ~/.zkbd/"$TERM-$VENDOR-$OSTYPE" ]]; then
   source ~/.zkbd/"$TERM-$VENDOR-$OSTYPE"
 
-  bindkey "${key[Up]}" up-line-or-search
-  bindkey "${key[Down]}" down-line-or-search
+  bindkey "${key[Up]}" up-line
+  bindkey "${key[Down]}" down-line
 
   bindkey "${key[Home]}" beginning-of-line
   bindkey "${key[End]}" end-of-line
