@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -eu
+
+cd "$VAULTSDIR"
+
+NAME=$1
+
+if [ -f "${NAME}.mount" ]; then
+  echo "already mounted" >&2
+  exit 1
+fi
+
+hdiutil attach "${NAME}.sparsebundle" > "${NAME}.mount"
+
