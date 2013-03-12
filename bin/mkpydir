@@ -1,0 +1,29 @@
+#!/bin/sh
+
+set -eu
+
+if [ "$#" -lt 1 ]; then
+  echo "Usage: $(basename "$0") [-p] <dir> [dir [...]]" >&2
+  exit 1
+fi
+
+CREATE_INTERMEDIATES=
+
+if [ "$1" = "-p" ]; then
+  CREATE_INTERMEDIATES="-p"
+  shift
+fi
+
+mkdir $CREATE_INTERMEDIATES "$@"
+
+for item in "$@"; do
+  stopat=${item%%/*}
+  while [ ! "$item" = "$stopat" ]; do
+    touch "$item/__init__.py"
+    item=${item%/*}
+  done
+  touch "$item/__init__.py"
+done
+
+
+
