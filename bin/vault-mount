@@ -11,5 +11,11 @@ if [ -f "${NAME}.mount" ]; then
   exit 1
 fi
 
-hdiutil attach "${NAME}.sparsebundle" > "${NAME}.mount"
+BUNDLE="${NAME}.sparsebundle"
 
+if [ ! -e "$BUNDLE" ]; then
+  echo "${PWD}/${BUNDLE} doesn't exist" >&2
+  exit 1
+fi
+
+hdiutil attach "$BUNDLE" > "${NAME}.mount"
