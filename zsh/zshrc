@@ -69,3 +69,7 @@ for file ($ZSH/lib/*.zsh(.xN)) source $file
 if which defaults >/dev/null; then
   defaults write ~/.MacOSX/environment PATH "$PATH"
 fi
+
+# mount vaults
+vault-mount ssh 2>/dev/null
+vault-mount gpg 2>/dev/null
