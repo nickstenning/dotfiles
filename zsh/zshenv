@@ -20,7 +20,7 @@ export MAILDIR="${HOME}/.mail"
 export NOTESDIR="${HOME}/Dropbox/data/notes"
 
 # Keychain
-export KEYCHAIN_DEFAULT_KEYS="id_rsa D1BEB004"
+export KEYCHAIN_DEFAULT_KEYS="D1BEB004 /Volumes/ssh/$(hostname -s) /Volumes/ssh/gds $(hostname -s) id_rsa id_dsa"
 
 # Editor
 export EDITOR="e"
