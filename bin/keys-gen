@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -eu
+
+if ! vault-loc ssh >/dev/null 2>&1; then
+  echo "ssh vault not mounted" >&2
+  exit 1
+fi
+
+cd "$(vault-loc ssh)"
+ssh-keygen -t rsa -b 4096 -f "$(hostname -s)"
+
