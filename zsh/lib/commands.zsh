@@ -25,7 +25,7 @@ histstat() {
 }
 
 ks () {
-  eval $(keychain -q --eval --timeout 1440 ${=KEYCHAIN_DEFAULT_KEYS})
+  eval $(keychain -q --inherit any --ignore-missing --eval --timeout 1440 ${=KEYCHAIN_DEFAULT_KEYS})
 }
 
 mess () {
