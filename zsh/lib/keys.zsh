@@ -33,8 +33,6 @@ setopt pushd_ignore_dups
 # other keybindings
 bindkey -e
 bindkey "^r" history-incremental-search-backward
-bindkey "^f" forward-word
-bindkey "^b" backward-word
 bindkey "\e\e[C" forward-word  # alt-rightarrow
 bindkey "\e\e[D" backward-word # alt-leftarrow
 
