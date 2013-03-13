@@ -17,9 +17,11 @@ cdpath=(.)
 
 # use /etc/hosts and ssh_config for hostname completion
 typeset -U autohosts
-autohosts=("$autohosts[@]" $(egrep -h '^Host' ~/.ssh/*config | grep -v '*' | awk '{$1=""}1'))
-autohosts=("$autohosts[@]" $(egrep '^[^#].+' /etc/hosts | grep -v 'adobe' | awk '{$1=""}1'))
-autohosts=("$autohosts[@]" $(grep -v '^#' ~/.ssh/known_hosts | cut -d' ' -f1 | sed -E 's/([^,]+),.+/\1/' | grep '^[a-zA-Z]'))
+for f in ~/.ssh/*config(N); do
+  autohosts=("$autohosts[@]" $(egrep -h '^Host' "$f" | grep -v '*' | awk '{$1=""}1'))
+done
+autohosts=("$autohosts[@]" $(egrep '^[^#].+' /etc/hosts | grep -vF '127.0.0.1' | awk '{$1=""}1'))
+autohosts=("$autohosts[@]" $(test -e ~/.ssh/known_hosts && grep -v '^#' ~/.ssh/known_hosts | cut -d' ' -f1 | sed -E 's/([^,]+),.+/\1/' | grep '^[a-zA-Z]'))
 
 zstyle ':completion:*:hosts' hosts $autohosts
 
