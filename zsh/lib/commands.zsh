@@ -106,6 +106,7 @@ alias grep="grep --colour"
 alias h="head -n $(( +LINES ? LINES - 4 : 20 ))"
 alias ipy="python =ipython --no-banner"
 alias notrail="sed -Ee 's/[ 	]+$//'  -i ''"
+alias psg="ps auxwww | head -n 1; ps auxwww | grep -Ei"
 alias reload="exec $SHELL"
 alias rm="rm -i"
 alias s3cmd='s3cmd -c ~/.s3cfg-ns'
