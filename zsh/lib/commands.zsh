@@ -79,19 +79,33 @@ alias lal="la -l"
 alias lalh="lal -h"
 
 alias aka-curl='curl -H "Pragma: akamai-x-cache-on, akamai-x-cache-remote-on, akamai-x-check-cacheable, akamai-x-get-cache-key, akamai-x-get-extracted-values, akamai-x-get-nonces, akamai-x-get-ssl-client-session-id, akamai-x-get-true-cache-key, akamai-x-serial-no"'
-alias aka-dcurl='aka-curl -s -D- -o/dev/null'
+alias aka-dcurl="aka-curl -s -D- -o/dev/null"
 alias be="bundle exec"
 alias bi="bundle install --path=.gems"
-alias dcurl='curl -s -D- -o/dev/null'
 alias d="dirs -v"
+alias dcurl="curl -s -D- -o/dev/null"
 alias ducks="du -ks -- * | sort -nr | cut -f2 | tr '\n' '\0' | du -shc --files0-from=-"
-alias gc="rlwrap gc"
+alias g="git"
+alias ga="git add"
+alias gaa="git add -A"
+alias gap="git add -p"
+alias gau="git add -u"
+alias gb="git branch"
+alias gc="git commit -v"
+alias gca="git commit --amend -v"
+alias gd="git diff --color-words"
+alias gdc="git diff --color-words --cached"
+alias gds="git diff --color-words --stat"
+alias gf="git fetch"
+alias gg="git grep -En"
+alias gl="git log --decorate --abbrev-commit"
+alias gp="git pull"
+alias gpr="git pull --rebase"
+alias gs="git status -sb"
 alias grep="grep --colour"
 alias h="head -n $(( +LINES ? LINES - 4 : 20 ))"
 alias ipy="python =ipython --no-banner"
-alias j="jobs"
 alias notrail="sed -Ee 's/[ 	]+$//'  -i ''"
-alias ports="lsof -i -nP | egrep 'COMMAND|LISTEN'"
 alias reload="exec $SHELL"
 alias rm="rm -i"
 alias s3cmd='s3cmd -c ~/.s3cfg-ns'
@@ -112,8 +126,7 @@ alias okscp="scp $OK_SSH_OPTS"
 alias oksftp="sftp $OK_SSH_OPTS"
 alias okssh="ssh $OK_SSH_OPTS"
 
-# Common filenames
-alias -g DN=/dev/null
-
-# Directory aliases
-hash -d gds=/Volumes/gds
+alias -g ...=../..
+alias -g ....=../../..
+alias -g .....=../../../..
+alias -g ......=../../../../..
