@@ -30,9 +30,16 @@ setopt transient_rprompt
 setopt auto_pushd
 setopt pushd_ignore_dups
 
+# include already-typed command when doing ^R
+history-incremental-search-backward-with-buffer() {
+  zle history-incremental-search-backward $BUFFER
+}
+zle -N history-incremental-search-backward-with-buffer
+
 # other keybindings
 bindkey -e
-bindkey "^r" history-incremental-search-backward
+bindkey "^R" history-incremental-search-backward-with-buffer
+bindkey -M isearch '^R' history-incremental-search-backward
 bindkey "\e\e[C" forward-word  # alt-rightarrow
 bindkey "\e\e[D" backward-word # alt-leftarrow
 
