@@ -24,13 +24,6 @@
 	ap = add -p
 	lp = log --decorate --abbrev-commit --patch
 	roh = rebase -i origin/HEAD
-[user]
-	name = Nick Stenning
-	email = nick@whiteink.com
-	signingkey = nick@whiteink.com
-[core]
-	excludesfile = /opt/boxen/config/git/gitignore
-	whitespace = fix
 [apply]
 	whitespace = fix
 [branch]
@@ -44,17 +37,20 @@
 	untracked = red
 	changed = yellow
 	updated = green
-[difftool "Kaleidoscope"]
-	cmd = ksdiff-wrapper git \"$LOCAL\" \"$REMOTE\"
-[difftool]
-	prompt = false
-[diff]
-	tool = Kaleidoscope
-[push]
-	default = upstream
-[include]
-	path = ~/.localgitconfig
-[hub]
-	protocol = https
+[core]
+	excludesfile = /opt/boxen/config/git/gitignore
+	whitespace = fix
 [credential]
 	helper = /opt/boxen/bin/boxen-git-credential
+[hub]
+	protocol = https
+[push]
+	default = upstream
+[user]
+	name = Nick Stenning
+	email = nick@whiteink.com
+	signingkey = nick@whiteink.com
+
+# Include any local config overrides
+[include]
+	path = ~/.localgitconfig
