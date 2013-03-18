@@ -6,7 +6,7 @@ cd "$VAULTSDIR"
 
 NAME=$1
 
-if [ -f "${NAME}.mount" ]; then
+if vault-loc "$NAME" 2>/dev/null; then
   echo "already mounted" >&2
   exit 1
 fi
@@ -18,4 +18,4 @@ if [ ! -e "$BUNDLE" ]; then
   exit 1
 fi
 
-hdiutil attach "$BUNDLE" > "${NAME}.mount"
+hdiutil attach "$BUNDLE" > "${NAME}.$(hostname -s).mount"

@@ -5,10 +5,11 @@ set -eu
 cd "$VAULTSDIR"
 
 NAME=$1
+MOUNTFILE="${NAME}.$(hostname -s).mount"
 
-if [ ! -f "${NAME}.mount" ]; then
+if [ ! -f "$MOUNTFILE" ]; then
   echo "not mounted" >&2
   exit 1
 fi
 
-tail -1 "${NAME}.mount" | cut -f3
+tail -1 "$MOUNTFILE" | cut -f3
