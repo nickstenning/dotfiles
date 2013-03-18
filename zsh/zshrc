@@ -73,3 +73,6 @@ fi
 # mount vaults
 vault-mount ssh 2>/dev/null
 vault-mount gpg 2>/dev/null
+
+# load keychain
+eval $(keychain -q --eval --noask --inherit any-once --ignore-missing --timeout 1440 ${=KEYCHAIN_DEFAULT_KEYS})
