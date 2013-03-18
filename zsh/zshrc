@@ -13,55 +13,6 @@ compinit -i
 # allow adding hooks in main files
 autoload -U add-zsh-hook
 
-dot () {
-  [ -f "$1" ] && . "$1"
-}
-
-# boxen
-dot /opt/boxen/env.sh
-
-if which brew >/dev/null; then
-  BREW_PREFIX=$(brew --prefix)
-
-  path=(
-    $BREW_PREFIX/share/python
-    $BREW_PREFIX/share/python3
-    $BREW_PREFIX/share/npm/bin
-    $path
-  )
-  fpath=($BREW_PREFIX/share/zsh-completions $fpath)
-
-  # autoenv
-  dot "$BREW_PREFIX/opt/autoenv/activate.sh"
-  # virtualenv
-  dot "$BREW_PREFIX/share/python/virtualenvwrapper_lazy.sh"
-  # z
-  dot "$BREW_PREFIX/etc/profile.d/z.sh"
-
-  # pkg-config
-  typeset -T PKG_CONFIG_PATH pkg_config_path
-  typeset -U pkg_config_path
-  pkg_config_path=( $BREW_PREFIX/{lib,share}/pkgconfig(/N) $pkg_config_path )
-  export PKG_CONFIG_PATH
-fi
-
-if [ -f "$BOXEN_NVM_DIR/nvm.sh" ]; then
-  . "$BOXEN_NVM_DIR/nvm.sh"
-  nvm use "$BOXEN_NVM_DEFAULT_VERSION" >/dev/null
-fi
-
-# boxen fallbacks
-if [ -z "$BOXEN_HOME" ]; then
-
-  # node/nvm
-  dot "$HOME/.nvm/nvm.sh"
-
-  # rbenv
-  if which rbenv >/dev/null; then
-    eval "$(rbenv init -)"
-  fi
-fi
-
 # load main files
 for file ($ZSH/lib/*.zsh(.xN)) source $file
 
