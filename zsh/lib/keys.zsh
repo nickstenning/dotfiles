@@ -10,14 +10,14 @@ select-word-style bash
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
 
-# file rename magic
+# duplicate previous word on M-m
 autoload -U copy-prev-shell-word
 bindkey "\em" copy-prev-shell-word
 
 # execute from history
 bindkey -M menuselect '^o' accept-and-infer-next-history
 
-# do history expansion on space
+# expand history (!!, !$, !1, etc.) on space
 bindkey ' ' magic-space
 
 # jobs
@@ -31,27 +31,54 @@ setopt auto_pushd
 setopt pushd_ignore_dups
 
 # include already-typed command when doing ^R
-history-incremental-search-backward-with-buffer() {
-  zle history-incremental-search-backward $BUFFER
+history-incremental-pattern-search-backward-with-buffer() {
+  zle history-incremental-pattern-search-backward $BUFFER
 }
-zle -N history-incremental-search-backward-with-buffer
+zle -N history-incremental-pattern-search-backward-with-buffer
 
 # other keybindings
-bindkey -e
-bindkey "^R" history-incremental-search-backward-with-buffer
+export KEYTIMEOUT=1 # wait only 10ms before leaving insert mode
+bindkey -v
+bindkey '^R' history-incremental-pattern-search-backward-with-buffer
 bindkey -M isearch '^R' history-incremental-search-backward
+bindkey -M vicmd '/' history-incremental-pattern-search-backward-with-buffer
 bindkey "\e\e[C" forward-word  # alt-rightarrow
 bindkey "\e\e[D" backward-word # alt-leftarrow
 
+cursor-block () {
+  print -Pn '\e]50;CursorShape=0\x7'
+}
+
+cursor-line () {
+  print -Pn '\e]50;CursorShape=1\x7'
+}
+
+zle-keymap-select () {
+  case $KEYMAP in
+    vicmd) cursor-block;;
+    main|viins) cursor-line;;
+  esac
+}
+zle -N zle-keymap-select
+
+zle-line-init () {
+  cursor-line
+}
+zle -N zle-line-init
+
+use-hjkl () {
+  zle -M "use hjkl"
+}
+zle -N use-hjkl
+
 if [[ -e ~/.zkbd/"$TERM-$VENDOR-$OSTYPE" ]]; then
   source ~/.zkbd/"$TERM-$VENDOR-$OSTYPE"
-
-  bindkey "${key[Up]}" up-line
-  bindkey "${key[Down]}" down-line
-
+  for k in Up Down Left Right; do
+    bindkey -M vicmd "${key[$k]}" use-hjkl
+    bindkey "${key[$k]}" use-hjkl
+  done
   bindkey "${key[Home]}" beginning-of-line
   bindkey "${key[End]}" end-of-line
-
   bindkey "${key[Backspace]}" backward-delete-char
   bindkey "${key[Delete]}" delete-char
 fi
