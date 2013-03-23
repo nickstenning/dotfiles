@@ -16,7 +16,7 @@ gen_pub_key () {
   local key=$1
   if [ ! -f "${key}.pub" ]; then
     echo "missing public key for ${key}: generating..." >&2
-    ssh-keygen -y -f "$key" >"${key}.pub"
+    ( ssh-keygen -y -f "$key" | tr -d '\n' ; echo " $key" ) >"${key}.pub"
   fi
 }
 
