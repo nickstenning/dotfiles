@@ -66,17 +66,8 @@ zle-line-init () {
 }
 zle -N zle-line-init
 
-use-hjkl () {
-  zle -M "use hjkl"
-}
-zle -N use-hjkl
-
 if [[ -e ~/.zkbd/"$TERM-$VENDOR-$OSTYPE" ]]; then
   source ~/.zkbd/"$TERM-$VENDOR-$OSTYPE"
-  for k in Up Down Left Right; do
-    bindkey -M vicmd "${key[$k]}" use-hjkl
-    bindkey "${key[$k]}" use-hjkl
-  done
   bindkey "${key[Home]}" beginning-of-line
   bindkey "${key[End]}" end-of-line
   bindkey "${key[Backspace]}" backward-delete-char
