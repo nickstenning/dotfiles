@@ -21,7 +21,7 @@ export NOTESDIR="${HOME}/Dropbox/data/notes"
 export VAULTSDIR="${HOME}/Dropbox/data/vaults"
 
 # Keychain
-export KEYCHAIN_DEFAULT_KEYS="D1BEB004 /Volumes/ssh/$(hostname -s) /Volumes/ssh/gds $(hostname -s) id_rsa id_dsa"
+export KEYCHAIN_DEFAULT_KEYS="D1BEB004 $(hostname -s) gds id_rsa id_dsa"
 
 # Editor
 export EDITOR="vim"
