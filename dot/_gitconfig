@@ -44,6 +44,7 @@
 	helper = /opt/boxen/bin/boxen-git-credential
 [hub]
 	protocol = https
+	host = github.gds
 [push]
 	default = upstream
 [user]
