@@ -44,6 +44,8 @@ bindkey -M isearch '^R' history-incremental-search-backward
 bindkey -M vicmd '/' history-incremental-pattern-search-backward-with-buffer
 bindkey "\e\e[C" forward-word  # alt-rightarrow
 bindkey "\e\e[D" backward-word # alt-leftarrow
+bindkey -M viins '^A' beginning-of-line
+bindkey -M viins '^E' end-of-line
 
 cursor-block () {
   print -Pn '\e]50;CursorShape=0\x7'
