@@ -10,3 +10,4 @@
 --ignore-dir=.bundle
 --ignore-dir=.gems
 --ignore-dir=.tox
+--ignore-dir=node_modules
