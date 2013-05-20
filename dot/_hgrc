@@ -8,7 +8,6 @@ hgext.bookmarks=
 hgext.fetch=
 rebase=
 pager=
-hggit=
 
 [pager]
 pager = LESS='FSRX' less
