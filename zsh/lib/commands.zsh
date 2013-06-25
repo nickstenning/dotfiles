@@ -6,6 +6,10 @@ aws () {
   fi
 }
 
+cdr () {
+  cd "$(git rev-parse --show-toplevel)"
+}
+
 alias ggpg="gpg -u digital.cabinet-office.gov.uk"
 
 ggpgedit() {
