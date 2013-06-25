@@ -23,3 +23,6 @@ fi
 
 # load keychain
 eval $(keychain -q --eval --noask --inherit any-once --ignore-missing --timeout 1440 ${=KEYCHAIN_DEFAULT_KEYS})
+
+# z
+dot "$BREW_PREFIX/etc/profile.d/z.sh"

@@ -77,8 +77,6 @@ if which brew >/dev/null; then
   dot "$BREW_PREFIX/opt/autoenv/activate.sh"
   # virtualenv
   dot "$BREW_PREFIX/share/python/virtualenvwrapper_lazy.sh"
-  # z
-  dot "$BREW_PREFIX/etc/profile.d/z.sh"
 
   # pkg-config
   typeset -T PKG_CONFIG_PATH pkg_config_path
