@@ -10,12 +10,12 @@ cdr () {
   cd "$(git rev-parse --show-toplevel)"
 }
 
-alias ggpg="gpg -u digital.cabinet-office.gov.uk"
+alias ggpg="gpg -u 7C6A93CB"
 
 ggpgedit() {
   local FILENAME="$1"
   shift
-  gpgedit "$FILENAME" -u digital.cabinet-office.gov.uk "$@"
+  gpgedit "$FILENAME" -u 7C6A93CB "$@"
 }
 compdef gpgedit=gpg
 compdef ggpgedit=gpg
