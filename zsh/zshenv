@@ -54,6 +54,9 @@ path=( ~/code/go/bin(N) $path )
 # Git
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 
+# Vagrant
+export VAGRANT_DEFAULT_PROVIDER="vmware_fusion"
+
 dot () {
   [ -f "$1" ] && . "$1"
 }
