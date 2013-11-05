@@ -32,6 +32,17 @@ ks () {
   eval $(keychain -q --eval --inherit any-once --ignore-missing --timeout 1440 ${=KEYCHAIN_DEFAULT_KEYS})
 }
 
+cur () {
+  set +e
+  DIR=~/archive/$(date +%Y/%m)
+  [ -d "$DIR" ] || {
+    mkdir -p "$DIR"
+    ln -sfn "$DIR" ~/archive/current
+    echo "Created ${DIR}."
+  }
+  cd ~/archive/current
+}
+
 mess () {
   set +e
   DIR=~/mess/$(date +%Y/%V)
