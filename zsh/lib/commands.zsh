@@ -1,24 +1,6 @@
-aws () {
-  if [ -z "$1" ]; then
-    echo "Usage: aws <name>"
-  else
-    eval `gpg -d "${HOME}/.aws.${1}.gpg"`
-  fi
-}
-
 cdr () {
   cd "$(git rev-parse --show-toplevel)"
 }
-
-alias ggpg="gpg -u 7C6A93CB"
-
-ggpgedit() {
-  local FILENAME="$1"
-  shift
-  gpgedit "$FILENAME" -u 7C6A93CB "$@"
-}
-compdef gpgedit=gpg
-compdef ggpgedit=gpg
 
 histgrep() {
   history 1 | grep "$@"
@@ -125,23 +107,9 @@ alias notrail="sed -Ee 's/[ 	]+$//'  -i ''"
 alias psg="ps auxwww | head -n 1; ps auxwww | grep -Ei"
 alias reload="exec $SHELL"
 alias rm="rm -i"
-alias s3cmd='s3cmd -c ~/.s3cfg-ns'
-alias s3gds="unalias s3cmd && alias s3cmd='s3cmd -c ~/.s3cfg-gds'"
-alias s3ns="unalias s3cmd && alias s3cmd='s3cmd -c ~/.s3cfg-ns'"
-alias s3okf="unalias s3cmd && alias s3cmd='s3cmd -c ~/.s3cfg-okf'"
 alias sudo="command sudo " # this trailing space checks next word for aliases
 alias t="tail -n $(( +LINES ? LINES - 4 : 20 ))"
 alias webserver="python -m SimpleHTTPServer 8000"
-
-GDS_SSH_OPTS="-F ~/.ssh/gds_config"
-alias gscp="scp $GDS_SSH_OPTS"
-alias gsftp="sftp $GDS_SSH_OPTS"
-alias gssh="ssh $GDS_SSH_OPTS"
-
-OK_SSH_OPTS="-F ~/.ssh/okf_config -l okfn"
-alias okscp="scp $OK_SSH_OPTS"
-alias oksftp="sftp $OK_SSH_OPTS"
-alias okssh="ssh $OK_SSH_OPTS"
 
 alias -g ...=../..
 alias -g ....=../../..
