@@ -8,7 +8,8 @@ setopt noglobalrcs
 
 # Set path to contain only unique elements, and then set a sensible default.
 typeset -U path
-path=( ~/local/{,s}bin(N)
+path=( ~/.nodenv/bin(N)
+       ~/local/{,s}bin(N)
        /usr/texbin
        /usr/local/{,s}bin(N)
        /usr/{,s}bin(N)
