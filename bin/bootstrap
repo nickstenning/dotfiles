@@ -21,7 +21,7 @@ cd ~/code/dotfiles
 ./do
 cd ~/code/dotvim
 ./install
-git submodule update --init
+vim +BundleInstall +qall
 EOM
 
 status "running bootstrapper"
