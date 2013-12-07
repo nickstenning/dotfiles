@@ -12,7 +12,7 @@ ssh-copy-id "$@"
 status "writing bootstrap script to host"
 ssh "$@" tee bootstrap.sh <<EOM
 sudo apt-get -y update
-sudo apt-get -y install vim-nox git zsh keychain exuberant-ctags
+sudo apt-get -y install vim-nox git zsh exuberant-ctags
 sudo chsh -s /bin/zsh "\$USER"
 mkdir code
 git clone git@github.com:nickstenning/dotfiles code/dotfiles
