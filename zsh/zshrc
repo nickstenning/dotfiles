@@ -22,7 +22,9 @@ if which defaults >/dev/null; then
 fi
 
 # load keychain
-eval $(keychain -q --eval --noask --inherit any-once --ignore-missing --timeout 1440 ${=KEYCHAIN_DEFAULT_KEYS})
+if which keychain >/dev/null; then
+  eval $(keychain -q --eval --noask --inherit any-once --ignore-missing --timeout 1440 ${=KEYCHAIN_DEFAULT_KEYS})
+fi
 
 # z
 dot "$BREW_PREFIX/etc/profile.d/z.sh"
