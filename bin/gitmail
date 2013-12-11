@@ -2,6 +2,8 @@
 
 set -eu
 
+export PATH="/usr/local/bin:/usr/bin:$PATH"
+
 warn () {
   echo "WARNING: ${@}" >&2
 }
