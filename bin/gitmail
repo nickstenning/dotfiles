@@ -1,0 +1,48 @@
+#!/bin/sh
+
+set -eu
+
+warn () {
+  echo "WARNING: ${@}" >&2
+}
+
+check_git_clean () {
+  BRANCH=$(git symbolic-ref HEAD | sed 's|^refs/heads/||')
+
+  if [ -f lock ]; then
+    warn "'lock' file exists"
+    return 1 
+  elif [ "$BRANCH" != "master" ]; then
+    warn "on non-master branch"
+    return 1
+  elif ! git diff --quiet --ignore-submodules --no-ext-diff; then
+    warn "uncommitted local changes"
+    return 1
+  else
+    git fetch -q origin
+    if ! git merge --ff-only origin/master >/dev/null 2>&1; then
+      warn "unpushed local commits"
+      return 1
+    else
+      git clean -dfq
+      return 0
+    fi
+  fi
+}
+
+cd "$HOME/mail"
+
+if ! check_git_clean; then
+  warn "git repository not in clean state, aborting."
+  exit 1
+fi
+
+offlineimap -u quiet -o
+
+if ! git diff --quiet --ignore-submodules --no-ext-diff; then
+  git add -A .
+  git commit -q \
+             -m "Automatic commit by $(basename "$0")" \
+             --author "Gitmail <gitmail@$(hostname -f)>"
+  git push -q origin master
+fi
