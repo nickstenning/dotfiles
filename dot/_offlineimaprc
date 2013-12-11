@@ -1,36 +1,26 @@
 [general]
-ui = ttyui
-accounts = Main
-fsync = False
+ui = blinkenlights
+accounts = FastMail
+fsync = True
 
-[Account Main]
-localrepository = Local
-remoterepository = Gmail
+[Account FastMail]
+localrepository = LocalFM
+remoterepository = RemoteFM
 status_backend = sqlite
-postsynchook = notmuch new
+#postsynchook = notmuch new
 
-[Repository Local]
+[Repository LocalFM]
 type = Maildir
-localfolders = ~/.mail
-nametrans = lambda folder: {'drafts':  '[Gmail]/Drafts',
-                            'sent':    '[Gmail]/Sent Mail',
-                            'flagged': '[Gmail]/Starred',
-                            'archive': '[Gmail]/All Mail',
-                            }.get(folder, folder)
+localfolders = ~/mail/fastmail
 
-[Repository Gmail]
-type = Gmail
-cert_fingerprint = f3043dd689a2e7dddfbef82703a6c65ea9b634c1
-realdelete = no
-remoteuser = nickstenning@gmail.com
-remotepassfile = ~/.secret/gmailimap
-maxconnections = 3
-nametrans = lambda folder: {'[Gmail]/Drafts':    'drafts',
-                            '[Gmail]/Sent Mail': 'sent',
-                            '[Gmail]/Starred':   'flagged',
-                            '[Gmail]/All Mail':  'archive',
-                            }.get(folder, folder)
-folderfilter = lambda folder: folder not in ['[Gmail]/Trash',
-                                             '[Gmail]/Important',
-                                             '[Gmail]/Spam',
-                                             ]
+[Repository RemoteFM]
+type = IMAP
+remotehost = mail.messagingengine.com
+remoteport = 993
+remoteuser = nick@whiteink.com
+remotepassfile = ~/.secret/fastmailimap
+ssl = yes
+cert_fingerprint = fa86c1ca2d4f805e8fe7b8e7076a3ad2ccc52bb4
+holdconnectionopen = yes
+maxconnections = 5
+folderfilter = lambda folder: folder not in ['INBOX.Junk Mail']
