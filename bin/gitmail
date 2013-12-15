@@ -26,7 +26,6 @@ check_git_clean () {
       warn "unpushed local commits"
       return 1
     else
-      git clean -dfq
       return 0
     fi
   fi
@@ -41,8 +40,8 @@ fi
 
 offlineimap -u quiet -o
 
-if ! git diff --quiet --ignore-submodules --no-ext-diff; then
-  git add -A .
+git add -A .
+if ! git diff --cached --quiet --ignore-submodules --no-ext-diff; then
   git commit -q \
              -m "Automatic commit by $(basename "$0")" \
              --author "Gitmail <gitmail@$(hostname -f)>"
