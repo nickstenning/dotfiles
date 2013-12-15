@@ -23,4 +23,4 @@ ssl = yes
 cert_fingerprint = fa86c1ca2d4f805e8fe7b8e7076a3ad2ccc52bb4
 holdconnectionopen = yes
 maxconnections = 5
-folderfilter = lambda folder: folder not in ['INBOX.Junk Mail']
+folderfilter = lambda folder: not folder.startswith('RESTORED') and folder not in ['INBOX.Junk Mail']
