@@ -42,7 +42,6 @@
 	excludesfile = /opt/boxen/config/git/gitignore
 	whitespace = fix
 [credential]
-	helper = /opt/boxen/bin/boxen-git-credential
 [hub]
 	protocol = https
 	host = github.gds
