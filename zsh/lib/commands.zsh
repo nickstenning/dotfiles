@@ -17,22 +17,22 @@ ks () {
 cur () {
   set +e
   DIR=~/archive/$(date +%Y/%m)
-  [ -d "$DIR" ] || {
+  if [ ! -d "$DIR" ]; then
     mkdir -p "$DIR"
     ln -sfn "$DIR" ~/archive/current
-    echo "Created ${DIR}."
-  }
+  fi
+  echo "${DIR}"
   cd ~/archive/current
 }
 
 mess () {
   set +e
   DIR=~/mess/$(date +%Y/%V)
-  [ -d "$DIR" ] || {
+  if [ ! -d "$DIR" ]; then
     mkdir -p "$DIR"
     ln -sfn "$DIR" ~/mess/current
-    echo "Created ${DIR}."
-  }
+  fi
+  echo "${DIR}"
   cd ~/mess/current
 }
 
