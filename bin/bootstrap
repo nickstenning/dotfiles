@@ -17,10 +17,12 @@ sudo chsh -s /bin/zsh "\$USER"
 mkdir -p code
 git clone git@github.com:nickstenning/dotfiles code/dotfiles
 git clone git@github.com:nickstenning/dotvim code/dotvim
+git clone git@github.com:nickstenning/dotvirtualenvs .virtualenvs
 cd ~/code/dotfiles
 ./do
 cd ~/code/dotvim
 ./install
+git submodule update --init
 vim +BundleInstall +qall
 EOM
 
