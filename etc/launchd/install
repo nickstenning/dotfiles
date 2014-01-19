@@ -9,7 +9,7 @@ find . -name '*.plist' | while read file; do
 
   ln -sfn "$SRC" "$DST"
 
-  if launchctl list "$LABEL" >/dev/null; then
+  if launchctl list "$LABEL" >/dev/null 2>&1; then
     echo "${LABEL} already loaded" >&2
   else
     launchctl load "$DST"
