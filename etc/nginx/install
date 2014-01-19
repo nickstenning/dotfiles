@@ -20,5 +20,9 @@ else
 fi
 
 sudo mkdir -p /Library/LaunchDaemons
+if sudo launchctl list homebrew.mxcl.nginx >/dev/null; then
+  sudo launchctl unload /Library/LaunchDaemons/homebrew.mxcl.nginx.plist
+fi
 sudo cp homebrew.mxcl.nginx.plist /Library/LaunchDaemons/
 sudo launchctl load -w /Library/LaunchDaemons/homebrew.mxcl.nginx.plist
+
