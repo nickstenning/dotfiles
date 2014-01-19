@@ -10,7 +10,7 @@
     <false/>
     <key>ProgramArguments</key>
     <array>
-        <string>/usr/local/opt/nginx/sbin/nginx</string>
+        <string>/usr/local/opt/nginx/bin/nginx</string>
         <string>-g</string>
         <string>daemon off;</string>
     </array>
