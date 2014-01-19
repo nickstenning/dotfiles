@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -eu
+
+find . -name '*.plist' | while read file; do
+  LABEL=$(basename "$file" ".plist")
+  SRC="${PWD}/${file}"
+  DST="${HOME}/Library/LaunchAgents/$(basename "$file")"
+
+  ln -sfn "$SRC" "$DST"
+
+  if launchctl list "$LABEL" >/dev/null; then
+    echo "${LABEL} already loaded" >&2
+  else
+    launchctl load "$DST"
+    echo "${LABEL} loaded" >&2
+  fi
+done

@@ -1,19 +1,577 @@
-#!/bin/sh
+#!/usr/bin/perl -w
+# Copyright © 2006-2014 Jamie Zawinski <jwz@jwz.org>
+#
+# Permission to use, copy, modify, distribute, and sell this software and its
+# documentation for any purpose is hereby granted without fee, provided that
+# the above copyright notice appear in all copies and that both that
+# copyright notice and this permission notice appear in supporting
+# documentation.  No representations are made about the suitability of this
+# software for any purpose.  It is provided "as is" without express or 
+# implied warranty.
+#
+# Parses the database files in the iPhone backup files and saves the
+# output in multiple files: one file per phone number messages have
+# been sent to or received from, per month.
+# E.g., ~/Documents/SMS Backup/YYYY-MM.NNNNNNNNNN.txt
+#
+# It only changes files when needed, and will never delete a message
+# from one of the files (so if your phone's messages database has shrunk,
+# your old archived messages won't be lost.)
+#
+# Created: 21-Jun-2006 for PalmOS; rewritten for iPhone on 6-Mar-2010.
 
-set -eu
 
-BACKUPDIR="${HOME}/Dropbox/archive/backups/sms"
-DBS_IN="${HOME}/Library/Application Support/MobileSync/Backup"
 
-mkdir -p "${BACKUPDIR}"
+# Note: if you get the error "file is encrypted or is not a database", it
+#       means that you have the wrong version of the SQLite library.  Great
+#       error message, right?  Try re-installing "DBI" and "DBD::SQLite".
 
-fgrep -ailR 'msg_group' "${DBS_IN}" | while read file; do
-  device_id="$(basename "$(dirname "${file}")")"
-  cp "${file}" "${BACKUPDIR}/smsdb_${device_id}_$(date '+%Y%m%d').sqlite3"
-done
 
-# Remove all but the most recent fortnight's backups. (Or the most recent 14, 
-# if you're not backing up every day.)
-pushd "${BACKUPDIR}" >/dev/null
-ls -t | tail -n+28 | xargs rm
-popd >/dev/null
+require 5;
+use diagnostics;
+use strict;
+use POSIX;
+use DBI;
+use Date::Parse;
+use Data::Dumper;
+
+my $progname = $0; $progname =~ s@.*/@@g;
+my $version = q{ $Revision: 1.17 $ }; $version =~ s/^[^0-9]+([0-9.]+).*$/$1/;
+
+my $verbose = 0;
+my $debug_p = 0;
+
+my $iphone_backup_dir = ($ENV{HOME} . 
+                         "/Library/Application Support/MobileSync/Backup/");
+my $addressbook_dir = ($ENV{HOME} .
+                       "/Library/Application Support/AddressBook/");
+
+# This magic number is the hash of the iPhone SMS database name: We could
+# just "use Digest::SHA1" and do sha1_hex("HomeDomain-Library/SMS/sms.db")
+# but the hash doesn't change...
+#
+my $sms_db_name = "3d0d7e5fb2ce288813306e4d4636395e047a3d28";
+
+# For future reference, other hashed databases names include:
+#
+#   HomeDomain-Library/CallHistory/call_history.db
+#   HomeDomain-Library/AddressBook/AddressBook.sqlitedb
+#   HomeDomain-Library/AddressBook/AddressBookImages.sqlitedb
+#   HomeDomain-Library/Notes/notes.db
+#   HomeDomain-Library/Voicemail/voicemail.db
+#   HomeDomain-Library/Calendar/Calendar.sqlitedb
+
+
+$ENV{PATH} = "$ENV{HOME}/bin:$ENV{PATH}";   # for cron, bleh.
+
+
+my %phone_number_map;
+
+# Loads the address-book DB and populates the %phone_number_map with
+# a map of phone numbers to real names.
+#
+# It would probably make more sense to read the number->name map out
+# of the iPhone's copy of the address-book DB rather than the host Mac's
+# address book, but I had a hard time figuring out how to do that, so
+# fuck it.  Close enough.
+#
+sub load_addressbook($) {
+  my ($file) = @_;
+  my %attr;
+
+  print STDERR "opening address book DB\n  $file...\n"
+    if ($verbose > 2);
+
+  my $dbh = DBI->connect("dbi:SQLite:dbname=" . $file, '', '',
+                         \%attr);
+
+  my $sth = $dbh->prepare ("SELECT " .
+                           " pn.zfullnumber, " .
+                           " pn.zlabel, " .
+                           " r.zfirstname, " .
+                           " r.zlastname, " .
+                           " r.zorganization " .
+                           "FROM ZABCDPHONENUMBER pn ".
+                           "JOIN ZABCDRECORD r " .
+                           "ON pn.zowner = r.z_pk " .
+                           "ORDER BY r.zfirstname, r.zlastname");
+  $sth->execute();
+
+  my $count = 0;
+  while (my $h = $sth->fetchrow_hashref()) {
+    my $fn  = $h->{ZFIRSTNAME};
+    my $ln  = $h->{ZLASTNAME};
+    my $org = $h->{ZORGANIZATION};
+    my $name = ($fn && $ln ? "$fn $ln" : $fn || $ln ? ($fn || $ln) :
+                $org ? $org : '???');
+    my $phone = $h->{ZFULLNUMBER};
+    $phone =~ s/[-.()_\s]//gs           # "(415) 555-1212"   ==>  "4155551212".
+      unless ($phone =~ m/[@]/s);
+    $phone =~ s/^\+?1(\d{10})$/$1/s;    # "+1 415 555 1212"  ==>  "4155551212".
+
+    print STDERR "$progname: addr: $phone\t$name\n" if ($verbose > 4);
+    $phone_number_map{$phone} = $name;
+    $count++;
+  }
+  return $count;
+}
+
+
+# Halfassedly extract values from a plist.
+#
+sub plist_kludge($) {
+  my ($plist) = @_;
+  my $result = '';
+
+  if ($plist =~ m@^<\?xml@si) {
+    $plist =~ s@<string>([^<>]+)</string>@{
+      $result .= ($result ? ", " : "") . $1;
+      ''}@gsexi;
+
+  } elsif ($plist =~ m@^bplist\d*(.*)@si) {
+    #
+    # I really don't want to write a decoder for binary plists, and
+    # the "Data::Plist::BinaryReader" module doesn't seem to work.
+    # So just run "strings" on it, basically.
+    #
+    $plist = $1;
+    $plist =~ s/[\000-\037\200-\377\\%]+/ /gs;
+    $plist =~ s/^\s+|\s+$//gsi;
+    foreach (split (/\s+/, $plist)) {
+      next unless m/^.{8}/s;
+      $result .= ($result ? ", " : "") . $_;
+    }
+
+  } else {
+    print STDERR "$progname: unrecognized plist: $plist\n";
+  }
+  return $result;
+}
+
+
+# Don't actually need this, I guess?
+# There is a second copy of the 'text' field in 'madrid_attributedBody'
+# which is an NSArchive object of an NSData of an NSAttributedString.
+#
+#use Foundation;
+#sub nsunarchive($) {
+#  my ($data) = @_;
+#  $data = NSString->stringWithCString_length_($data, length($data));
+#  $data = $data->dataUsingEncoding_(NSString->defaultCStringEncoding);
+#  $data = NSUnarchiver->unarchiveObjectWithData_($data);
+#  $data = $data->string();
+#  $data = $data->cStringUsingEncoding_(NSString->defaultCStringEncoding);
+#  return $data;
+#}
+
+
+sub reformat_phone_number($) {
+  my ($n) = @_;
+  my @r = ();
+  foreach (split(/\s*,\s*/, $n)) {
+    s/[-.()_\s]//gs           # "(415) 555-1212"   ==>  "4155551212".
+      unless m/[@]/s;
+    s/^\+?1(\d{10})$/$1/s;    # "+1 415 555 1212"  ==>  "4155551212".
+    s@/@@g;                   # some numbers have / in them. BAD!
+    push @r, $_;
+  }
+  return join (', ', @r);
+}
+
+
+sub number_to_name($) {
+  my ($n) = @_;
+  my @r = ();
+  foreach my $n1 (split(/\s*,\s*/, $n)) {
+    $n1 = $phone_number_map{$n1};
+    push @r, $n1 if $n1;
+  }
+  return join (', ', @r);
+}
+
+
+sub sms_backup_1($$) {
+  my ($db_file, $output_dir) = @_;
+
+  print STDERR "$progname: opening $db_file...\n" if ($verbose > 2);
+
+  my %attr;
+  my $dbh = DBI->connect("dbi:SQLite:dbname=" . $db_file, '', '', \%attr);
+
+  my $sth = $dbh->prepare("SELECT * FROM message");
+  $sth->execute();
+
+  my $date = (stat($db_file))[9];
+  print STDERR "$progname: last modified: " . localtime($date) . "\n"
+    if ($verbose > 2);
+
+  my %output;
+
+  while (my $h = $sth->fetchrow_hashref()) {
+    my $imsgp  = $h->{is_madrid};	# 0 = SMS, 1 = iMessage
+    my $flags  = $h->{flags};		# 0 = iMessage, 2 = SMS in, 3 = SMS out
+					# 33 = SMS out failure
+					# 35 = SMS out failure, retry
+					# 129 = SMS deleted
+					# 131 = SMS out, invalid recipient
+    my $mflags = $h->{madrid_flags};	# bit field, 0b100 = "SMS in"
+	                                # UIFlags?? "5 = link, 6 = symbols"
+    my $mtype  = $h->{madrid_type}; 	# 0 = msg, 1 = group chat
+    my $date   = $h->{date};		# sometimes time_t,
+					# sometimes epoch-2001
+    my $addr   = $h->{address};
+    my $macct  = $h->{madrid_account};
+    my $text   = $h->{text};
+    my $abody  = $h->{madrid_attributedBody};
+    my $subj   = $h->{subject};
+    my $head   = $h->{headers};
+    my $recip  = $h->{recipients};
+    my $room   = $h->{madrid_roomname};
+
+    # SMSes use normal Unix time_t, with epoch = Jan 1, 1970 GMT.
+    # iMessages use epoch = Jan 1, 2001 GMT.  WTF!
+    #
+    # The "service" field is either 'iMessage' or 'SMS', but if it is set
+    # at all, then that means the date is of the other epoch.
+    #
+    $imsgp = 1 if defined ($h->{service});
+    $date += 978307200 if ($imsgp);
+
+    my @lt = localtime($date);
+    print STDERR "$progname: IMPROBABLE YEAR: " . localtime($date) . "\n"
+      if ($lt[5] < (2005 - 1900) || $lt[5] > (localtime)[5]);
+
+    if ($subj && $text) { $text = "$subj\n$text"; }
+    elsif ($subj && !$text) { $text = $subj; }
+    elsif (!defined($text)) { $text = ''; }
+
+    $text = clean_text ($text);
+
+    # Sometimes the 'address' phone number is in an XML blob in 'recipients',
+    # for no reason that I can discern, even when there's only one recipient.
+    #
+    if (!$addr && $recip) {
+      $addr = plist_kludge ($recip);
+    }
+
+    # In iMessage, the destination is sometimes in madrid_handle instead.
+    $addr = $h->{madrid_handle} unless defined $addr;
+
+    if ($mtype && $mtype == 1) {
+      my $sth2 = $dbh->prepare("SELECT * FROM madrid_chat" .
+                               " WHERE room_name = '$room'" .
+                               " LIMIT 1");
+      $sth2->execute();
+      my $h2 = $sth2->fetchrow_hashref();
+      $addr = plist_kludge ($h2->{participants});
+    }
+
+    # Hey, let's hide the recipient somewhere else. Great.
+    #
+    if (!defined($addr)) { 
+      my $id = $h->{handle_id};
+      if ($id) {
+        my $sth2 = $dbh->prepare("SELECT * FROM handle" .
+                                 " WHERE ROWID = '$id'" .
+                                 " LIMIT 1");
+        $sth2->execute();
+        my $h2 = $sth2->fetchrow_hashref();
+        $addr = $h2->{id};
+      }
+    }
+
+    # Sometimes I get a message with no recipient, but with an attachment,
+    # and cache_roomnames => 'chat257619989216595149'.  No idea what to
+    # do with that. I can't find it in any of the other tables.
+    #
+    $addr = '???' unless defined ($addr);
+
+    # In a multi-recipient chat, move the sender to the front of the list.
+    #
+    if ($addr =~ m/,/ && $h->{madrid_handle}) {
+      my $sender = $h->{madrid_handle};
+      $addr =~ s@,\s*\Q$sender@@si;
+      $addr =~ s@\Q$sender\E,\s*@@si;
+      $addr = "$sender, $addr";
+    }
+
+    $addr = reformat_phone_number ($addr);
+
+    $text =~ s/(^\n+|\n+$)//gs;
+    $text =~ s/\n/\n\t/gs;             # indent continuation lines
+
+
+    # The "sent/received" flag is stored differently in iMessages versus SMSes.
+    # And it changed again in iOS 6.0.
+    my $type;
+    if (defined ($h->{is_from_me})) {
+      $type = ($h->{is_from_me} ? '>' : '<');		# iOS 6.0
+    } elsif ($imsgp) {
+      $type = (($mflags & (1<<15)) ? '>' : '<');	# iOS 5.0 iMessage
+    } else {
+      $type = (($flags & 1) ? '>' : '<');		# SMS
+    }
+
+    my $timestr = strftime ("%a %b %d %I:%M %p", @lt);
+
+    my $name = number_to_name($addr) || '';
+    my $line = "$type $timestr $addr $name \t$text\n";
+
+    my $month_str = strftime ("%Y-%m", @lt);
+    $addr =~ s/\s+//gs;
+    my $filename = "$output_dir/$month_str.$addr.txt";
+
+    print STDERR "$progname: got: $line\n" if ($verbose > 5);
+
+    $output{"$filename"} = ($output{"$filename"} || '') . $line;
+  }
+
+  if (! -d $output_dir && !$debug_p) {
+    print STDERR "$progname: mkdir $output_dir\n" if ($verbose);
+    mkdir ($output_dir);
+  }
+
+  foreach my $file (sort keys (%output)) {
+    my $body = $output{$file};
+    write_changes ($file, $body);
+  }
+}
+
+
+sub sms_backup($) {
+  my ($output_dir) = @_;
+
+  $output_dir =~ s@/+$@@gs;
+
+  # Iterate over each subdirectory in the backup dir, and save SMS messages
+  # from every database in those dirs.
+
+  my @dbs = ($addressbook_dir . "AddressBook-v22.abcddb");
+  my $dd = $addressbook_dir . "Sources";
+
+  if (opendir (my $dir, $dd)) {
+    my @files = sort readdir($dir);
+    closedir $dir;
+    foreach my $d (@files) {
+      next if ($d =~ m/^\./);
+      my $f = "$dd/$d/AddressBook-v22.abcddb";
+      push @dbs, $f if (-f $f);
+    }
+  }
+
+  if ($verbose > 2) {
+    print STDERR "\n$progname: AddressBook DBs:\n\n";
+    foreach my $f (@dbs) {
+      print STDERR "  $f\n";
+    }
+    print STDERR "\n";
+  }
+
+  my $count = 0;
+  foreach my $f (@dbs) {
+    $count += load_addressbook ($f);
+  }
+  error ("no entries in Address Books") unless $count;
+
+
+  opendir (my $dir, $iphone_backup_dir) || error ("$iphone_backup_dir: $!");
+  my @files = sort readdir($dir);
+  closedir $dir;
+  @dbs = ();
+
+  foreach my $d (@files) {
+    next if ($d =~ m/^\./);
+    my $f = "$iphone_backup_dir$d/$sms_db_name.mddata";  # iPhone 3.x name
+    push @dbs, $f if (-f $f);
+    $f = "$iphone_backup_dir$d/$sms_db_name";            # iPhone 4.x name
+    push @dbs, $f if (-f $f);
+  }
+
+  if ($verbose > 2) {
+    print STDERR "\n$progname: SMS DBs:\n\n";
+    foreach my $f (@dbs) {
+      my $f2 = $f;
+      $f2 =~ s@^\Q$iphone_backup_dir@@s;
+      print STDERR "  $f2\n";
+    }
+    print STDERR "\n";
+  }
+
+  foreach my $f (@dbs) {
+    sms_backup_1 ($f, $output_dir);
+  }
+}
+
+
+sub clean_text($) {
+  my ($text) = @_;
+  $text =~ s/\302\240/ /gs;	# UTF8 nbsp
+  $text =~ s/\240/ /gs;      	# ASCII nbsp
+  $text =~ s/\357\277\274//gs;	# no idea
+
+  $text =~ s/(^|\t)RE :New Message\b\s*/$1/gs;  # WTF
+
+  return $text;
+}
+
+
+# Ok, it's not really CSV.  Each line in the file begins with > or <
+# except that lines beginning with TAB are continuation lines.
+#
+sub csv_split($) {
+  my ($body) = @_;
+
+  $body = clean_text($body);
+  $body =~ s/^([<>] )/\001$1/gm;
+  my @lines = split (/\001/, $body);
+  shift @lines; # lose first blank line
+  return @lines;
+}
+
+
+sub write_changes($$) {
+  my ($file, $nbody) = @_;
+
+  sub trimline($) {
+    my ($line) = @_;
+    # Work around a now-fixed bug where old files had botched the
+    # date's minute (had written it as %m (month) instead of %M...)
+    $line =~ s/^(.{16})../$1__/s;
+    return $line;
+  }
+
+  my @obody = ();
+  my %olines;
+  my $count = 0;
+  my $count2 = 0;
+  if (open (my $in, '<', $file)) {
+    local $/ = undef;  # read entire file
+    my $obody = <$in>;
+    close $in;
+    @obody = csv_split ($obody);
+    foreach my $line (@obody) {
+      $count++;
+      $olines{trimline($line)} = 1;
+    }
+  }
+
+  my @nlines = ();
+  foreach my $line (csv_split ($nbody)) {
+    if (! $olines{trimline($line)}) {
+      $count++;
+      $count2++;
+      push @nlines, $line;
+    }
+  }
+
+  my ($year, $mon) = ($file =~ m@/(\d\d\d\d)-(\d\d)\.[^/]+$@);
+  my @now = localtime(time);
+  my $now = (($now[5] + 1900) * 10000 + $now[4]);
+  my $then = ($year * 10000 + $mon);
+  my $old_p = ($now - $then) > 2;
+
+  # NOTE: As a sanity-check, we refuse to append SMS messages to any file
+  # that is more than a few months old.  This is because sometimes the
+  # date-stamps on old SMSes shifts slightly; and also because if you have
+  # changed or deleted the address-book name associated with that phone
+  # number, the line will show as "different".  (E.g., if someone changed
+  # their phone number and you deleted the old number from the address book.)
+  #
+  # However, if the SMS is old, but the file doesn't exist at all, we write
+  # the file anyway, under the assumption that this is the first run, and
+  # we're populating the directory with a bunch of old SMSes for the first
+  # time.
+  #
+  $old_p = 0 if (! -f $file);
+
+
+  my @nbody = @obody;
+
+  my $f2 = $file;
+  $f2 =~ s@^.*/@@gs;
+  foreach (@nlines) {
+    if ($verbose > 2 && $#obody >= 0) {
+      print STDERR "$f2: + $_";
+    }
+    push @nbody, $_;
+  }
+
+
+#  open (my $out, '>', "/tmp/a") || error ("$file: $!");
+#  print $out join ("", @nbody);
+#  close $out;
+#  my $cmd = "diff -U0 '$file' /tmp/a";
+#  print STDERR "#### $cmd\n";
+#  system ($cmd);
+
+
+  if ($#nlines < 0) {
+    if ($verbose > 1) {
+      $file =~ s@^.*/@@;
+      print STDERR "$progname: $file: unchanged\n";
+    }
+  } else {
+
+    my ($file_year) = ($file =~ m@/(\d{4})-\d\d\.[^/]+$@si);
+    error ("unparsable file name: $file") unless ($file_year > 2000);
+
+    # Sort lines numerically.
+    my $dateof = sub($) {
+      my ($line) = @_;
+      my ($d) = ($line =~ m/^..(.{19})/s);
+      $d = "$d $file_year";  # So that Feb 29 is parsable, of all things.
+      my $d2 = str2time($d) || error ("unparsable time: $d");
+      return $d2;
+    };
+    @nbody = sort { $dateof->($a) <=> $dateof->($b) } @nbody;
+
+    if (! ($debug_p || $old_p)) {
+      open (my $out, '>', $file) || error ("$file: $!");
+      print $out join ("", @nbody);
+      close $out;
+    }
+
+    if ($verbose) {
+      $file =~ s@^.*/@@;
+      print STDERR ("$progname: " .
+                    (($debug_p || $old_p) ? "didn't write" : "wrote") .
+                    ($old_p ? " old file" : "") .
+                    " $file ($count2 of $count lines)\n");
+    }
+  }
+}
+
+
+sub error($) {
+  my ($err) = @_;
+  print STDERR "$progname: $err\n";
+  exit 1;
+}
+
+sub usage() {
+  print STDERR "usage: $progname [--verbose] [--debug] output-dir\n";
+  exit 1;
+}
+
+sub main() {
+  my $output_dir = undef;
+  while ($#ARGV >= 0) {
+    $_ = shift @ARGV;
+    if ($_ eq "--verbose") { $verbose++; }
+    elsif (m/^-v+$/) { $verbose += length($_)-1; }
+    elsif ($_ eq "--debug") { $debug_p++; }
+    elsif (m/^-./) { usage; }
+    elsif (! $output_dir) { $output_dir = $_; }
+    else { usage; }
+  }
+
+  $verbose += 3 if ($debug_p);
+
+  $output_dir = "$ENV{HOME}/Documents/SMS Backup"
+    unless $output_dir;
+
+  sms_backup ($output_dir);
+}
+
+main();
+exit 0;

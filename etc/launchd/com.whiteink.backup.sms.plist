@@ -7,6 +7,7 @@
 	<key>ProgramArguments</key>
 	<array>
 		<string>/Users/borior/local/bin/backup-sms</string>
+		<string>/Users/borior/archive/backups/sms</string>
 	</array>
 	<key>StartInterval</key>
 	<integer>86400</integer>
