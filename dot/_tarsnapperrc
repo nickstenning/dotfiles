@@ -1,0 +1,8 @@
+# Global values, valid for all jobs unless overridden:
+deltas: 1d 7d 30d
+target: $name-$date
+jobs:
+  test1:
+    source: ~/code/sh
+
+# vim:ft=yaml
