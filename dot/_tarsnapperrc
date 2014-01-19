@@ -2,7 +2,13 @@
 deltas: 1d 7d 30d
 target: $name-$date
 jobs:
-  test1:
-    source: ~/code/sh
+  dropbox:
+    source: /Users/borior/Dropbox
+  archive:
+    source: /Users/borior/archive
+  fonts:
+    source: /Users/borior/fonts
+  code:
+    source: /Users/borior/code
 
 # vim:ft=yaml
