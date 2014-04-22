@@ -58,6 +58,11 @@ export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 # Vagrant
 export VAGRANT_DEFAULT_PROVIDER="vmware_fusion"
 
+# Docker
+if [ "$(uname)" = "Darwin" ]; then
+  export DOCKER_HOST="tcp://localhost:4243"
+fi
+
 dot () {
   [ -f "$1" ] && . "$1"
 }
