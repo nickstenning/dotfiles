@@ -10,8 +10,8 @@ main () {
     exit 1
   fi
 
-  git fetch origin "refs/pull/$1/head:refs/remotes/origin-pr/$1"
-  git checkout -tb "pr/$1" "origin-pr/$1"
+  git fetch origin "refs/pull/$1/head:refs/remotes/origin/pull/$1"
+  git checkout "pull/$1"
 }
 
 main "$@"
