@@ -39,7 +39,7 @@
 	changed = yellow
 	updated = green
 [core]
-	excludesfile = /opt/boxen/config/git/gitignore
+	excludesfile = ~/.gitignore
 	whitespace = fix
 [credential]
 [hub]
