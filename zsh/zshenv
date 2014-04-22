@@ -49,7 +49,7 @@ export GNUPLOT_LIB="${HOME}/.gnuplot.d:${GNUPLOT_LIB}"
 export VIRTUALENV_USE_DISTRIBUTE="yes"
 
 # Go
-export GOPATH="${HOME}/code/go:${GOPATH}"
+export GOPATH="${HOME}/code/go"
 path=( ~/code/go/bin(N) $path )
 
 # Git
