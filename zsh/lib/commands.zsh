@@ -2,6 +2,15 @@ cdr () {
   cd "$(git rev-parse --show-toplevel)"
 }
 
+ducks () {
+  if ! which gsort >/dev/null; then
+    echo "no gsort... install coreutils first" >&2
+    return 1
+  fi
+  dir=${1:-"."}
+  du -cksh "$dir"/* | gsort -h
+}
+
 histgrep() {
   history 1 | grep "$@"
 }
@@ -54,9 +63,10 @@ alias mmv="zmv -W"
 # ALIASES
 # =======
 
-if which gdate >/dev/null; then alias date="gdate"; fi
-if which gdu >/dev/null; then alias du="gdu"; fi
-if which gseq >/dev/null; then alias seq="gseq"; fi
+if which gdate >/dev/null; then alias date=gdate; fi
+if which gdu >/dev/null; then alias du=gdu; fi
+if which gseq >/dev/null; then alias seq=gseq; fi
+if which gsort >/dev/null; then alias sort=gsort; fi
 
 if (ls --version 2>&1 | grep -q "coreutils"); then
   lsopts="-FBv --color=auto -I'*.pyc' --group-directories-first"
@@ -84,7 +94,6 @@ alias dcurl="curl -s -D- -o/dev/null"
 alias dockercleancontainers="docker ps -a -notrunc| grep 'Exit' | awk '{print \$1}' | xargs -L 1 -r docker rm"
 alias dockercleanimages="docker images -a -notrunc | grep none | awk '{print \$3}' | xargs -L 1 -r docker rmi"
 alias dockerclean="dockercleancontainers && dockercleanimages"
-alias ducks="du -ks -- * | sort -nr | cut -f2 | tr '\n' '\0' | du -shc --files0-from=-"
 alias e="$EDITOR"
 alias g="git"
 alias ga="git add"
