@@ -1,0 +1,70 @@
+source /usr/local/etc/Muttrc
+source ~/.mutt/gpg.rc
+source ~/.mutt/mutt-colors-solarized-dark-256.rc
+
+set from="nick@whiteink.com"
+set realname="Nick Stenning"
+
+set my_fastmail_user="nick@whiteink.com"
+set my_fastmail_pass=`gpg --batch -d ~/.secret/fastmail.gpg`
+
+set imap_user=$my_fastmail_user
+set imap_pass=$my_fastmail_pass
+set smtp_pass=$my_fastmail_pass
+
+# Fetching
+set folder=imaps://mail.messagingengine.com:993/INBOX
+set spoolfile="="
+set postpone=no
+set record="=Sent Items"
+set imap_check_subscribed=yes
+set imap_passive=no
+set imap_idle=yes
+set mail_check=60 # Reduce polling frequency to a sane level
+set header_cache=~/.mutt/cache # keep a cache of headers for faster loading (1.5.9+?)
+
+# Viewing
+alternative_order text/plain text/html
+set sort=threads
+
+# Editing
+set edit_headers=yes
+set send_charset="utf-8"
+set text_flowed=yes
+set trash="=Trash"
+
+# Sending
+set crypt_autosign=yes
+set crypt_replyencrypt=yes
+set pgp_use_gpg_agent=yes
+set pgp_sign_as=D1BEB004
+set pgp_timeout=3600
+set smtp_url=smtps://$my_fastmail_user:$my_fastmail_pass@mail.messagingengine.com:465
+
+# Lists
+subscribe .+@lists.okfn.org
+subscribe .+@groups.google.com
+subscribe .+-team@okfn.org
+subscribe all-staff@okfn.org
+
+# Keybindings
+bind  editor <space> noop
+bind  generic     gg first-entry
+bind  generic     G  last-entry
+bind  index       G  last-entry
+bind  index,pager c  mail
+bind  generic     x  tag-entry
+bind  index       x  tag-thread
+bind  pager       x  tag-message
+bind  index,pager s  flag-message
+macro index,pager !  "<save-message>=Junk Mail<enter><enter>" "Report spam"
+macro index,pager y  <tag-prefix><save-message>=Archive<enter><enter> "Archive thread"
+bind  index,pager a  group-reply
+macro index,pager ga <change-folder>=Archive<enter>           "Go to archive"
+macro index,pager gl <change-folder>?                         "Go to folder"
+macro index,pager gi <change-folder>=<enter>                  "Go to inbox"
+macro index,pager gt "<change-folder>=Sent Items<enter>"      "Go to sent"
+folder-hook =Trash macro index,pager y <save-message>=<enter><enter> "Move to inbox"
+
+
+
