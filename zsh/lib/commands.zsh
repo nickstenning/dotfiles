@@ -88,7 +88,7 @@ alias lalh="lal -h"
 alias aka-curl='curl -H "Pragma: akamai-x-cache-on, akamai-x-cache-remote-on, akamai-x-check-cacheable, akamai-x-get-cache-key, akamai-x-get-extracted-values, akamai-x-get-nonces, akamai-x-get-ssl-client-session-id, akamai-x-get-true-cache-key, akamai-x-serial-no"'
 alias aka-dcurl="aka-curl -s -D- -o/dev/null"
 alias be="bundle exec"
-alias bi="bundle install --path=.gems"
+alias bi="bundle install --path=.bundle"
 alias d="dirs -v"
 alias dcurl="curl -s -D- -o/dev/null"
 alias dockercleancontainers="docker ps -a -notrunc| grep 'Exit' | awk '{print \$1}' | xargs -L 1 -r docker rm"
