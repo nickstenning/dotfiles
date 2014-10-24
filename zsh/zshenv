@@ -70,10 +70,7 @@ dot () {
   [ -f "$1" ] && . "$1"
 }
 
-# boxen
-
-dot /opt/boxen/env.sh
-
+# Homebrew
 if which brew >/dev/null; then
   BREW_PREFIX=$(brew --prefix)
 
