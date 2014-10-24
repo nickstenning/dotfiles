@@ -4,7 +4,6 @@ db_file            "~/Dropbox/data/mpd/database"
 state_file         "~/Dropbox/data/mpd/state"
 sticker_file       "~/Dropbox/data/mpd/sticker.sql"
 pid_file           "~/Dropbox/data/mpd/pid"
-log_file           "~/local/var/log/mpd.log"
 music_directory    "~/Music"
 playlist_directory "~/Dropbox/data/mpd/playlists/"
 
