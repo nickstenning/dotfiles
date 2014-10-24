@@ -66,6 +66,9 @@ if [ "$(uname)" = "Darwin" ]; then
   export DOCKER_HOST="tcp://127.0.0.1:2375"
 fi
 
+# Music Player Daemon
+export MPD_HOST="$HOME/.mpd/socket"
+
 dot () {
   [ -f "$1" ] && . "$1"
 }
