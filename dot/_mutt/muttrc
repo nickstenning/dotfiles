@@ -15,17 +15,20 @@ set smtp_pass=$my_fastmail_pass
 # Fetching
 set folder=imaps://mail.messagingengine.com:993/INBOX
 set spoolfile="="
-set postpone=no
+set copy=no # Don't save sent messages in $record (FastMail SMTP does that for us)
 set record="=Sent Items"
 set imap_check_subscribed=yes
 set imap_passive=no
 set imap_idle=yes
 set mail_check=60 # Reduce polling frequency to a sane level
-set header_cache=~/.mutt/cache # keep a cache of headers for faster loading (1.5.9+?)
+set header_cache=~/.mutt/cache # (1.5.7+)
+set message_cachedir=~/.mutt/cache # (1.5.12+)
 
 # Viewing
 alternative_order text/plain text/html
 set sort=threads
+set delete=yes # Don't ask about purging
+set sleep_time=0
 
 # Editing
 set edit_headers=yes
