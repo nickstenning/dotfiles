@@ -48,6 +48,7 @@ export LSCOLORS="dxgxfafabxfafaxbxbadad"
 export GNUPLOT_LIB="${HOME}/.gnuplot.d:${GNUPLOT_LIB}"
 
 # Virtualenv
+export PIP_REQUIRE_VIRTUALENV=true
 export VIRTUALENV_USE_DISTRIBUTE="yes"
 
 # Go
