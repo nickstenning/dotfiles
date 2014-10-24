@@ -83,6 +83,8 @@ if which brew >/dev/null; then
   dot "$BREW_PREFIX/opt/autoenv/activate.sh"
   # virtualenv
   dot "$BREW_PREFIX/bin/virtualenvwrapper_lazy.sh"
+  # chruby
+  dot "$BREW_PREFIX/opt/chruby/share/chruby/chruby.sh"
 
   # pkg-config
   typeset -T PKG_CONFIG_PATH pkg_config_path
@@ -93,8 +95,4 @@ fi
 
 if which nodenv >/dev/null; then
   eval "$(nodenv init -)"
-fi
-
-if which rbenv >/dev/null; then
-  eval "$(rbenv init -)"
 fi
