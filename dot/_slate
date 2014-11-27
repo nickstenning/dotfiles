@@ -1,50 +1,61 @@
-# This is the default .slate file.
-# If no ~/.slate file exists this is the file that will be used.
-
 config defaultToCurrentScreen true
 config nudgePercentOf screenSize
 config resizePercentOf screenSize
 
-# Resize Bindings
-bind right:alt       resize +10% +0
-bind left:alt        resize -10% +0
-bind up:alt          resize +0   -10%
-bind down:alt        resize +0   +10%
-bind right:ctrl;alt  resize -10% +0 bottom-right
-bind left:ctrl;alt   resize +10% +0 bottom-right
-bind up:ctrl;alt     resize +0   +10% bottom-right
-bind down:ctrl;alt   resize +0   -10% bottom-right
+# Monitor aliases
+alias mon-laptop 1280x800
+alias mon-dell   2560x1440
 
-# Push Bindings
-bind right:ctrl;cmd  push right bar-resize:screenSizeX/3
-bind left:ctrl;cmd   push left  bar-resize:screenSizeX/3
-bind up:ctrl;cmd     push up    bar-resize:screenSizeY/2
-bind down:ctrl;cmd   push down  bar-resize:screenSizeY/2
+# Rows and columns
+alias col screenSizeX/12
+alias row screenSizeY/12
 
-# Nudge Bindings
-bind right:shift;alt nudge +10% +0
-bind left:shift;alt  nudge -10% +0
-bind up:shift;alt    nudge +0   -10%
-bind down:shift;alt  nudge +0   +10%
+# Position Aliases
+alias 2-main  move screenOriginX;screenOriginY                   8*${col};12*${row}
+alias 2-top-r move screenOriginX+8*${col};screenOriginY          4*${col};6*${row}
+alias 2-bot-r move screenOriginX+8*${col};screenOriginY+6*${row} 4*${col};6*${row}
+alias 3-main  move screenOriginX;screenOriginY                   5*${col};12*${row}
+alias 3-mid   move screenOriginX+5*${col};screenOriginY          3*${col};12*${row}
+alias 3-top-r move screenOriginX+8*${col};screenOriginY          4*${col};4*${row}
+alias 3-mid-r move screenOriginX+8*${col};screenOriginY+4*${row} 4*${col};4*${row}
+alias 3-bot-r move screenOriginX+8*${col};screenOriginY+8*${row} 4*${col};4*${row}
+alias w-top-l move screenOriginX;screenOriginY                   6*${col};8*${row}
+alias w-top-r move screenOriginX+6*${col};screenOriginY          6*${col};8*${row}
+alias w-wide  move screenOriginX;screenOriginY                   12*${col};8*${row}
+alias w-bot-l move screenOriginX;screenOriginY+8*${row}          4*${col};4*${row}
+alias w-bot-m move screenOriginX+4*${col};screenOriginY+8*${row} 4*${col};4*${row}
+alias w-bot-r move screenOriginX+8*${col};screenOriginY+8*${row} 4*${col};4*${row}
 
-# Throw Bindings
-bind 1:ctrl;alt         throw 0 resize
-bind 2:ctrl;alt         throw 1 resize
-bind 3:ctrl;alt         throw 2 resize
-bind right:ctrl;alt;cmd throw right resize
-bind left:ctrl;alt;cmd  throw left  resize
-bind up:ctrl;alt;cmd    throw up    resize
-bind down:ctrl;alt;cmd  throw down  resize
+# Layouts
+layout 3col 'Google Chrome':REPEAT    ${3-main}
+layout 3col 'MacVim':REPEAT           ${3-mid}
+layout 3col 'Textual IRC Client'      ${3-top-r}
+layout 3col 'iTerm':SORT_TITLE,REPEAT ${3-mid-r} | ${3-bo -r}
+layout 2col 'Google Chrome':REPEAT    ${2-main}
+layout 2col 'MacVim':REPEAT           ${2-main}
+layout 2col 'Textual IRC Client'      ${2-main}
+layout 2col 'iTerm':SORT_TITLE,REPEAT ${2-top-r} | ${2-bot-r}
+layout wide 'Google Chrome':REPEAT    ${w-top-l}
+layout wide 'Textual IRC Client'      ${w-top-r}
+layout wide 'MacVim':REPEAT           ${w-wide}
+layout wide 'iTerm':SORT_TITLE,REPEAT ${w-bot-l} | ${w-bot-m} | ${w-bot-r}
+
+# Default layouts
+default 3col resolutions:${mon-dell}
+default 2col resolutions:${mon-laptop}
 
 # Focus Bindings
-bind right:cmd    focus right
-bind left:cmd     focus left
-bind up:cmd       focus up
-bind down:cmd     focus down
-bind up:cmd;alt   focus behind
-bind down:cmd;alt focus behind
+bind l:cmd,ctrl       focus right
+bind h:cmd,ctrl       focus left
+bind k:cmd,ctrl       focus up
+bind j:cmd,ctrl       focus down
+bind k:shift,cmd,ctrl focus behind
+bind j:shift,cmd,ctrl focus behind
 
-bind .:cmd,ctrl grid padding:5 0:6,6 1:6,6
-
-# Window Hints
-bind ,:cmd,ctrl hint
+# Modal mappings
+bind r:f2 relaunch
+bind 1:f2 layout 2col
+bind 2:f2 layout 3col
+bind 3:f2 layout wide
+bind .:f2 grid
+bind ,:f2 hint
