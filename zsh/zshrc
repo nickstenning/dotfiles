@@ -1,6 +1,6 @@
 [ -z "$PS1" ] && return
 
-ZSH=$HOME/code/dotfiles/zsh
+ZSH=$HOME/src/dotfiles/zsh
 
 # Report timing statistics for long-running processes
 REPORTTIME=5
