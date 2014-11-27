@@ -10,9 +10,7 @@ setopt noglobalrcs
 typeset -U path
 path=( ~/.nodenv/bin(N)
        ~/.local/bin(N)
-       ~/go/bin(N)
-       ~/local/{,s}bin(N)
-       /usr/texbin
+       ~/bin(N)
        /usr/local/{,s}bin(N)
        /usr/{,s}bin(N)
        /{,s}bin(N)
@@ -52,8 +50,7 @@ export PIP_REQUIRE_VIRTUALENV=true
 export VIRTUALENV_USE_DISTRIBUTE="yes"
 
 # Go
-export GOPATH="${HOME}/code/go"
-path=( ~/code/go/bin(N) $path )
+export GOPATH="$HOME"
 
 # Git
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
