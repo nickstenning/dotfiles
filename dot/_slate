@@ -30,7 +30,7 @@ alias w-bot-r move screenOriginX+8*${col};screenOriginY+8*${row} 4*${col};4*${ro
 layout 3col 'Google Chrome':REPEAT    ${3-main}
 layout 3col 'MacVim':REPEAT           ${3-mid}
 layout 3col 'Textual IRC Client'      ${3-top-r}
-layout 3col 'iTerm':SORT_TITLE,REPEAT ${3-mid-r} | ${3-bo -r}
+layout 3col 'iTerm':SORT_TITLE,REPEAT ${3-mid-r} | ${3-bot-r}
 layout 2col 'Google Chrome':REPEAT    ${2-main}
 layout 2col 'MacVim':REPEAT           ${2-main}
 layout 2col 'Textual IRC Client'      ${2-main}
