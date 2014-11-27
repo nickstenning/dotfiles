@@ -1,5 +1,6 @@
 # vim:noet:
 [alias]
+	again = !git add -u && git commit --amend --no-edit
 	ca = commit -av
 	ci = commit -v
 	cim = commit -v -m
