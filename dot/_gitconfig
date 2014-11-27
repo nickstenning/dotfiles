@@ -4,7 +4,7 @@
 	ca = commit -av
 	ci = commit -v
 	cim = commit -v -m
-	cleanup = !git branch --merged | fgrep -v '*' | xargs -n1 git branch -d
+	cleanup = !git branch --merged | fgrep -v '*' | fgrep -v 'master' | xargs -n1 git branch -d
 	co = checkout
 	d = diff --color-words
 	ds = diff --color-words --stat
