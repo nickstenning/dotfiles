@@ -13,7 +13,6 @@ zstyle ':completion:*' list-colors ${LS_COLORS}
 
 # disable named-directories autocompletion
 zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-directories
-cdpath=(.)
 
 # use /etc/hosts and ssh_config for hostname completion
 typeset -U autohosts

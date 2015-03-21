@@ -16,6 +16,10 @@ path=( ~/.nodenv/bin(N)
        /{,s}bin(N)
      )
 
+# Set cdpath
+typeset -U cdpath
+cdpath=( . ~/src ~/src/github.com/nickstenning )
+
 export EMAIL="Nick Stenning <nick@whiteink.com>"
 export MAILDIR="${HOME}/.mail"
 export NOTESDIR="${HOME}/Dropbox/data/notes"
