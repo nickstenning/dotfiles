@@ -96,3 +96,8 @@ fi
 if which nodenv >/dev/null; then
   eval "$(nodenv init -)"
 fi
+
+WHEEL_TOOL=$(which wheel)
+if [ -x "$WHEEL_TOOL" ]; then
+  export WHEEL_TOOL
+fi
