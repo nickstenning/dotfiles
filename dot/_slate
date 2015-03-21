@@ -11,6 +11,8 @@ alias col screenSizeX/12
 alias row screenSizeY/12
 
 # Position Aliases
+alias 1-main  move screenOriginX;screenOriginY                   10*${col};12*${row}
+alias 1-full  move screenOriginX;screenOriginY                   12*${col};12*${row}
 alias 2-main  move screenOriginX;screenOriginY                   8*${col};12*${row}
 alias 2-top-r move screenOriginX+8*${col};screenOriginY          4*${col};6*${row}
 alias 2-bot-r move screenOriginX+8*${col};screenOriginY+6*${row} 4*${col};6*${row}
@@ -27,22 +29,26 @@ alias w-bot-m move screenOriginX+4*${col};screenOriginY+8*${row} 4*${col};4*${ro
 alias w-bot-r move screenOriginX+8*${col};screenOriginY+8*${row} 4*${col};4*${row}
 
 # Layouts
+layout 1col 'Google Chrome':REPEAT    ${1-main}
+layout 1col 'Textual IRC Client'      ${1-main}
+layout 1col 'iTerm':REPEAT            ${1-full}
+layout 1col 'MacVim':REPEAT           ${1-full}
+layout 2col 'Google Chrome':REPEAT    ${2-main}
+layout 2col 'MacVim':REPEAT           ${2-main}
+layout 2col 'Textual IRC Client'      ${2-bot-r}
+layout 2col 'iTerm':REPEAT            ${2-top-r}
 layout 3col 'Google Chrome':REPEAT    ${3-main}
 layout 3col 'MacVim':REPEAT           ${3-mid}
 layout 3col 'Textual IRC Client'      ${3-top-r}
 layout 3col 'iTerm':SORT_TITLE,REPEAT ${3-mid-r} | ${3-bot-r}
-layout 2col 'Google Chrome':REPEAT    ${2-main}
-layout 2col 'MacVim':REPEAT           ${2-main}
-layout 2col 'Textual IRC Client'      ${2-main}
-layout 2col 'iTerm':SORT_TITLE,REPEAT ${2-top-r} | ${2-bot-r}
 layout wide 'Google Chrome':REPEAT    ${w-top-l}
 layout wide 'Textual IRC Client'      ${w-top-r}
 layout wide 'MacVim':REPEAT           ${w-wide}
 layout wide 'iTerm':SORT_TITLE,REPEAT ${w-bot-l} | ${w-bot-m} | ${w-bot-r}
 
 # Default layouts
-default 3col resolutions:${mon-dell}
-default 2col resolutions:${mon-laptop}
+default 1col resolutions:${mon-laptop}
+default 2col resolutions:${mon-dell}
 
 # Focus Bindings
 bind l:cmd,ctrl       focus right
@@ -51,11 +57,21 @@ bind k:cmd,ctrl       focus up
 bind j:cmd,ctrl       focus down
 bind k:shift,cmd,ctrl focus behind
 bind j:shift,cmd,ctrl focus behind
+bind f3 focus 'Google Chrome'
+bind f4 focus 'iTerm'
+bind f5 focus 'MacVim'
+bind f6 focus 'Textual IRC Client'
 
 # Modal mappings
 bind r:f2 relaunch
-bind 1:f2 layout 2col
-bind 2:f2 layout 3col
-bind 3:f2 layout wide
+bind 1:f2 layout 1col
+bind 2:f2 layout 2col
+bind 3:f2 layout 3col
+bind 9:f2 layout wide
 bind .:f2 grid
 bind ,:f2 hint
+bind m:f2 corner top-left resize:screenSizeX;screenSizeY
+bind h:f2 corner top-left resize:screenSizeX/2;screenSizeY
+bind l:f2 corner top-right resize:screenSizeX/2;screenSizeY
+bind j:f2 corner bottom-left resize:screenSizeX;screenSizeY/2
+bind k:f2 corner top-left resize:screenSizeX;screenSizeY/2
