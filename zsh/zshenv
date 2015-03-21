@@ -62,11 +62,6 @@ export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 # Vagrant
 export VAGRANT_DEFAULT_PROVIDER="vmware_fusion"
 
-# Docker
-if [ "$(uname)" = "Darwin" ]; then
-  export DOCKER_HOST="tcp://127.0.0.1:2375"
-fi
-
 # Music Player Daemon
 export MPD_HOST="$HOME/.mpd/socket"
 
