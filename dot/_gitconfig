@@ -6,18 +6,17 @@
 	cim = commit -v -m
 	cleanup = !git branch --merged | fgrep -v '*' | fgrep -v 'master' | xargs -n1 git branch -d
 	co = checkout
-	d = diff --color-words
-	ds = diff --color-words --stat
-	dc = diff --color-words --cached
-	dcs = diff --color-words --stat --cached
+	d = diff
+	ds = diff --stat
+	dc = diff --cached
+	dcs = diff --cached --stat
 	br = branch -v
-	l = log --decorate --abbrev-commit
-	ls = log --decorate --abbrev-commit --stat
-	lt = log --decorate --abbrev-commit --oneline --graph --date=relative
+	l = log
+	ls = log --stat
+	lt = log --oneline --graph
 	sm = submodule
-	wc = whatchanged --decorate --abbrev-commit
-	s = status -sb
-	st = status -sb
+	wc = whatchanged
+	st = status
 	alias = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\\t => \\2/' | sort
 	p = pull
 	pr = pull --rebase
@@ -33,22 +32,20 @@
 	autosetupmerge = true
 [color]
 	ui = auto
-[color "branch"]
-	remote = yellow
 [color "status"]
-	added = green
-	untracked = red
 	changed = yellow
-	updated = green
 [core]
 	excludesfile = ~/.gitignore
 	whitespace = fix
-[credential]
-[hub]
-	protocol = https
-	host = github.gds
 [push]
 	default = upstream
+[log]
+	date = iso
+	abbrevCommit = true
+	decorate = short
+[status]
+	short = true
+	branch = true
 [user]
 	name = Nick Stenning
 	email = nick@whiteink.com
