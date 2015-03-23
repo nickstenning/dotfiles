@@ -20,3 +20,10 @@ for filename in _*; do
   echo "linking $SRC to $DST" >&2
   careful_link "$SRC" "$DST"
 done
+
+for filename in ssh/*; do
+  SRC="$(pwd)/${filename}"
+  DST="${HOME}/.${filename}"
+  echo "linking $SRC to $DST" >&2
+  careful_link "$SRC" "$DST"
+done
