@@ -38,7 +38,7 @@ _prompt_setup () {
 
   local p_glue=$'%{\e[G%}'
 
-  PS1="${p_glue}${c_host}${p_host}${c_wd}${p_cwd} ${c_prompt}%(!.#.»)${c_reset} "
+  PS1="${p_glue}${c_host}${p_host}${c_wd}${p_cwd} ${c_prompt}%(!.#.$)${c_reset} "
   PS2="${p_glue}${c_prompt}>> ${c_wd}%_ ${c_prompt}:${c_reset} "
   STATIC_RPROMPT="${c_rprompt}(${p_exit_code}${c_rprompt})$c_reset"
 

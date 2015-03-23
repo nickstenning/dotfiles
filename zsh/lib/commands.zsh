@@ -15,14 +15,6 @@ histgrep() {
   history 1 | grep "$@"
 }
 
-histstat() {
-  history 1 | awk '{ print $2 }' | histogram
-}
-
-ks () {
-  eval $(keychain -q --eval --inherit any-once --ignore-missing --timeout 1440 ${=KEYCHAIN_DEFAULT_KEYS})
-}
-
 cur () {
   set +e
   DIR=~/archive/$(date +%Y/%m)

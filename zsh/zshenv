@@ -20,13 +20,8 @@ path=( ~/.nodenv/bin(N)
 typeset -U cdpath
 cdpath=( . ~/src ~/src/github.com/nickstenning )
 
+# Profile
 export EMAIL="Nick Stenning <nick@whiteink.com>"
-export MAILDIR="${HOME}/.mail"
-export NOTESDIR="${HOME}/Dropbox/data/notes"
-export VAULTSDIR="${HOME}/Dropbox/data/vaults"
-
-# Keychain
-export KEYCHAIN_DEFAULT_KEYS="D1BEB004 $(hostname -s) gds id_rsa id_dsa"
 
 # Editor
 export EDITOR="vim"
@@ -46,9 +41,6 @@ export LC_COLLATE="C"
 export LS_COLORS="no=00:fi=00:di=33:ln=36:ex=00;31:pi=35;40:so=35;40:bd=35;40:cd=35;40"
 export LSCOLORS="dxgxfafabxfafaxbxbadad"
 
-# Gnuplot
-export GNUPLOT_LIB="${HOME}/.gnuplot.d:${GNUPLOT_LIB}"
-
 # Virtualenv
 export PIP_REQUIRE_VIRTUALENV=true
 export VIRTUALENV_USE_DISTRIBUTE="yes"
@@ -61,9 +53,6 @@ export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 
 # Vagrant
 export VAGRANT_DEFAULT_PROVIDER="vmware_fusion"
-
-# Music Player Daemon
-export MPD_HOST="$HOME/.mpd/socket"
 
 dot () {
   [ -f "$1" ] && . "$1"

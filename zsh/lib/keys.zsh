@@ -1,21 +1,6 @@
-# more useful M-h command
-unalias run-help
-autoload run-help
-
-# M-b M-f -> bash
-autoload -U select-word-style
-select-word-style bash
-
 # smart urls
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
-
-# duplicate previous word on M-m
-autoload -U copy-prev-shell-word
-bindkey "\em" copy-prev-shell-word
-
-# execute from history
-bindkey -M menuselect '^o' accept-and-infer-next-history
 
 # expand history (!!, !$, !1, etc.) on space
 bindkey ' ' magic-space
