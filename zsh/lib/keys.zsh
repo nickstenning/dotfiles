@@ -32,27 +32,6 @@ bindkey "\e\e[D" backward-word # alt-leftarrow
 bindkey -M viins '^A' beginning-of-line
 bindkey -M viins '^E' end-of-line
 
-cursor-block () {
-  print -Pn '\e]50;CursorShape=0\x7'
-}
-
-cursor-line () {
-  print -Pn '\e]50;CursorShape=1\x7'
-}
-
-zle-keymap-select () {
-  case $KEYMAP in
-    vicmd) cursor-block;;
-    main|viins) cursor-line;;
-  esac
-}
-zle -N zle-keymap-select
-
-zle-line-init () {
-  cursor-line
-}
-zle -N zle-line-init
-
 if [[ -e ~/.zkbd/"$TERM-$VENDOR-$OSTYPE" ]]; then
   source ~/.zkbd/"$TERM-$VENDOR-$OSTYPE"
   bindkey "${key[Home]}" beginning-of-line
