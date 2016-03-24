@@ -1,3 +1,0 @@
-keyfile ~/.tarsnap.key
-cachedir ~/.tarsnap.cache
-humanize-numbers
