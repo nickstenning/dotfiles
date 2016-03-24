@@ -1,8 +1,0 @@
-#!/bin/sh
-
-set -eu
-
-echo "Started work at $(date "+%H:%M")" | gdslog >/dev/null
-cd "$HOME"
-cd ~/govuk/development
-vagrant up
