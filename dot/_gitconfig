@@ -26,6 +26,7 @@
 	ap = add -p
 	lp = log --decorate --abbrev-commit --patch
 	roh = rebase -i origin/HEAD
+	rf = !git fetch && git reset --hard FETCH_HEAD
 [apply]
 	whitespace = fix
 [branch]
