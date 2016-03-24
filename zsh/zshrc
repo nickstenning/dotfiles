@@ -23,7 +23,7 @@ fi
 
 # load keychain
 if which keychain >/dev/null; then
-  eval $(keychain -q --eval --noask --inherit any-once --ignore-missing --timeout 1440 ${=KEYCHAIN_DEFAULT_KEYS})
+  eval $(keychain -Q -q --eval --agents ssh --ignore-missing --timeout 43200 $(hostname -s) id_rsa)
 fi
 
 # z
