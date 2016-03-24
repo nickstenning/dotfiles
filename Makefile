@@ -1,10 +1,15 @@
 UNAME := $(shell uname)
 
+# Scripts/binaries for $HOME/bin
 BINS_SRC := $(wildcard bin/*)
 BINS_DST := $(addprefix $(HOME)/,$(BINS_SRC))
 
+# Dotfiles to be linked into $HOME
 DOT_SRC := $(wildcard dot/*)
 DOT_DST := $(addprefix $(HOME)/.,$(notdir $(DOT_SRC)))
+
+.PHONY: default
+default: bins dotfiles
 
 .PHONY: bins
 bins: $(BINS_DST)
