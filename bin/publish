@@ -1,14 +1,26 @@
 #!/bin/sh
 
+: ${DATE:=$(date +%Y-%m-%d)}
+: ${NOTES_URL:=https://notes.wtk.io}
+: ${CSS_URL:=https://notes.wtk.io/main.css}
+: ${S3_BUCKET:=notes.wtk.io}
+
 set -eu
 
-printf "Slug: "
+printf "slug? "
 read SLUG
 
-PUBNAME="$(date +"%Y-%m-%d")-$SLUG"
+BASENAME="$DATE-$SLUG"
 
-pandoc -s -S -c https://notes.wtk.io/main.css -t html5 "$1" |
-aws s3 cp --content-type text/html --acl public-read - "s3://notes.wtk.io/$PUBNAME"
+pandoc -s -S -c "$CSS_URL" -t html5 "$1" |
+aws s3 cp \
+    --content-type text/html \
+    --acl public-read \
+    - "s3://$S3_BUCKET/$BASENAME"
 
-echo "https://notes.wtk.io/$PUBNAME"
+echo "published to $NOTES_URL/$BASENAME"
 
+if which pbcopy >/dev/null 2>&1; then
+    echo "$NOTES_URL/$BASENAME" | pbcopy
+    echo "copied URL to clipboard"
+fi
