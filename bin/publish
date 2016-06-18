@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -eu
+
+printf "Slug: "
+read SLUG
+
+PUBNAME="$(date +"%Y-%m-%d")-$SLUG"
+
+pandoc -s -S -c https://notes.wtk.io/main.css -t html5 "$1" |
+aws s3 cp --content-type text/html --acl public-read - "s3://notes.wtk.io/$PUBNAME"
+
+echo "https://notes.wtk.io/$PUBNAME"
+
