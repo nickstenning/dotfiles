@@ -2,6 +2,12 @@ cdr () {
   cd "$(git rev-parse --show-toplevel)"
 }
 
+dockerclean () {
+  docker rm $(docker ps -aq 2>/dev/null) 2>/dev/null
+  docker rm -v $(docker ps --filter status=exited -q 2>/dev/null) 2>/dev/null
+  docker rmi $(docker images --filter dangling=true -q 2>/dev/null) 2>/dev/null
+}
+
 ducks () {
   if ! which gsort >/dev/null; then
     echo "no gsort... install coreutils first" >&2
@@ -81,9 +87,6 @@ alias be="bundle exec"
 alias bi="bundle install --path=.bundle"
 alias d="dirs -v"
 alias dcurl="curl -s -D- -o/dev/null"
-alias dockercleancontainers="docker ps -a --no-trunc | grep 'Exit' | awk '{print \$1}' | xargs docker rm"
-alias dockercleanimages="docker images --no-trunc | grep none | awk '{print \$3}' | xargs docker rmi"
-alias dockerclean="dockercleancontainers && dockercleanimages"
 alias e="$EDITOR"
 alias grep="grep --colour"
 alias h="head -n $(( +LINES ? LINES - 4 : 20 ))"
