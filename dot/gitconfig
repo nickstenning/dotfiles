@@ -38,6 +38,8 @@
 [core]
 	excludesfile = ~/.gitignore
 	whitespace = fix
+[diff]
+	compactionHeuristic = true
 [push]
 	default = upstream
 [log]
