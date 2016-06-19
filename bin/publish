@@ -1,6 +1,6 @@
 #!/bin/sh
 
-: ${DATE:=$(date +%Y-%m-%d)}
+: ${DATE:=$(date +%Y/%m/%d)}
 : ${NOTES_URL:=https://notes.wtk.io}
 : ${CSS_URL:=https://notes.wtk.io/main.css}
 : ${S3_BUCKET:=notes.wtk.io}
@@ -10,17 +10,25 @@ set -eu
 printf "slug? "
 read SLUG
 
-BASENAME="$DATE-$SLUG"
+FILEPATH="$DATE/$SLUG"
+MIMETYPE=$(file --mime-type -b "$1")
 
-pandoc -s -S -c "$CSS_URL" -t html5 "$1" |
-aws s3 cp \
-    --content-type text/html \
-    --acl public-read \
-    - "s3://$S3_BUCKET/$BASENAME"
+if echo "$MIMETYPE" | grep -q '^text/'; then
+    pandoc -s -S -c "$CSS_URL" -t html5 "$1" |
+    aws s3 cp \
+        --content-type text/html \
+        --acl public-read \
+        - "s3://$S3_BUCKET/$FILEPATH"
+else
+    aws s3 cp \
+        --content-type "$MIMETYPE" \
+        --acl public-read \
+        "$1" "s3://$S3_BUCKET/$FILEPATH"
+fi
 
-echo "published to $NOTES_URL/$BASENAME"
+echo "published to $NOTES_URL/$FILEPATH"
 
 if which pbcopy >/dev/null 2>&1; then
-    echo "$NOTES_URL/$BASENAME" | pbcopy
+    echo "$NOTES_URL/$FILEPATH" | pbcopy
     echo "copied URL to clipboard"
 fi
