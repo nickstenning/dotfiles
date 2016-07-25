@@ -19,8 +19,6 @@
 	st = status
 	alias = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\\t => \\2/' | sort
 	p = pull
-	pr = pull --rebase
-	spr = !git stash save -u -q && git pull --rebase && git stash pop -q
 	au = add -u
 	aa = add -A
 	ap = add -p
@@ -40,12 +38,16 @@
 	whitespace = fix
 [diff]
 	compactionHeuristic = true
+[pull]
+	rebase = true
 [push]
 	default = upstream
 [log]
 	date = iso
 	abbrevCommit = true
 	decorate = short
+[rebase]
+	autoStash = true
 [status]
 	short = true
 	branch = true
