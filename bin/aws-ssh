@@ -1,0 +1,21 @@
+#!/bin/sh
+set -eu
+
+if [ "$#" -lt "1" ]; then
+  echo >&2 "Usage: aws-ssh <INSTANCEID> [ARGS, ...]"
+  exit 1
+fi
+
+INSTANCEID=$1
+HOST=$(aws ec2 describe-instances \
+         --query 'Reservations[].Instances[].PublicDnsName' \
+         --instance-ids "$INSTANCEID" \
+         --output text)
+
+shift
+ssh \
+  -l ec2-user \
+  -o UserKnownHostsFile=/dev/null \
+  -o StrictHostKeychecking=no \
+  "$HOST" \
+  "$@"
