@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -eu
+
+# Only run reattach-to-user-namespace if it actually exists
+if [ -n "$(command -v reattach-to-user-namespace)" ]; then
+  exec reattach-to-user-namespace "$@"
+fi
+
+# Ignore the -l param
+if [ "$1" = "-l" ]; then
+  shift
+fi
+
+exec "$@"
