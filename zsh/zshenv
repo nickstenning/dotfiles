@@ -82,6 +82,11 @@ if which brew >/dev/null; then
   export PKG_CONFIG_PATH
 fi
 
+# Debian
+if [ "$(lsb_release -is 2>/dev/null)" = "Debian" ]; then
+  dot /usr/share/virtualenvwrapper/virtualenvwrapper_lazy.sh
+fi
+
 if which nodenv >/dev/null; then
   eval "$(nodenv init -)"
 fi
