@@ -6,6 +6,21 @@ del_stopped () {
   fi
 }
 
+cloud-station-drive () {
+  del_stopped cloud-station-drive
+
+  docker run -d \
+    -v /var/run/dbus:/var/run/dbus \
+    -v /etc/machine-id:/etc/machine-id:ro \
+    -v /etc/localtime:/etc/localtime:ro \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    -e "DISPLAY=unix${DISPLAY}" \
+    -v "${HOME}/.config/CloudStation:/home/nick/.CloudStation" \
+    -v "${HOME}/Dropbox:/home/nick/Dropbox" \
+    --name cloud-station-drive \
+    nickstenning/cloud-station-drive
+}
+
 slack () {
   del_stopped slack
 
