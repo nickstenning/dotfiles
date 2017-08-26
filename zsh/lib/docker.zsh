@@ -12,8 +12,8 @@ chrome () {
   docker run -d \
     --net host \
     --security-opt seccomp=unconfined \
-    --cpuset-cpus 0 \
-    --memory 512mb \
+    --cpus 2 \
+    --memory 2g \
     -v /var/run/dbus:/var/run/dbus \
     -v /etc/machine-id:/etc/machine-id:ro \
     -v /etc/localtime:/etc/localtime:ro \
