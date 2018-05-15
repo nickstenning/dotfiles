@@ -33,7 +33,7 @@ export LESS="-R --ignore-case --long-prompt"
 
 # Set UTF8 for terminals
 unset LC_ALL
-export LANG="en_GB.UTF-8"
+export LANG="en_US.UTF-8"
 export LC_COLLATE="C"
 
 # Even if you're on BSD, you'll want to leave the Linux version here for zsh
