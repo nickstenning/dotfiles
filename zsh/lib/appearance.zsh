@@ -14,7 +14,11 @@ parse_git_dirty() {
 }
 
 _prompt_precmd () {
-  RPROMPT="%{$fg_bold[red]%}$(git_prompt_info) %{$reset_color%}${STATIC_RPROMPT}"
+  local venvprompt
+  if [ -n "$VIRTUAL_ENV" ]; then
+    venvprompt="%{${fg_bold[white]}%}[%{${fg[green]}%}${VIRTUAL_ENV##*/}%{${fg_bold[white]}%}]%{${reset_color}%} "
+  fi
+  RPROMPT="%{$fg_bold[red]%}$(git_prompt_info) %{$reset_color%}${venvprompt}${STATIC_RPROMPT}"
 }
 
 _prompt_setup () {
