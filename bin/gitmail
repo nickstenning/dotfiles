@@ -47,3 +47,5 @@ if ! git diff --cached --quiet --ignore-submodules --no-ext-diff; then
              --author "Gitmail <gitmail@$(hostname -f)>"
   git push -q origin master
 fi
+
+curl -sSL https://nosnch.in/55a2b0a21a >/dev/null 2>&1
