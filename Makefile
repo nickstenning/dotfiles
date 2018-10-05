@@ -14,7 +14,7 @@ default: bins dotfiles
 .PHONY: bins
 bins: $(BINS_DST)
 $(HOME)/bin/%: bin/%
-	@ln -sn $(abspath $<) $@ 2>/dev/null || echo 'skipping $(<F), destination exists'
+	@ln -sn '../src/dotfiles/$<' $@ 2>/dev/null || echo 'skipping $(<F), destination exists'
 
 # On Mac, compile and install bin/app.
 ifeq ($(UNAME),Darwin)
@@ -26,7 +26,7 @@ endif
 .PHONY: dotfiles
 dotfiles: $(DOT_DST)
 $(HOME)/.%: dot/%
-	@ln -sn $(abspath $<) $@ 2>/dev/null || echo 'skipping $(<F), destination exists'
+	@ln -sn 'src/dotfiles/$<' $@ 2>/dev/null || echo 'skipping $(<F), destination exists'
 
 .PHONY: clean
 clean:
