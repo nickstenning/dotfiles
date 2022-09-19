@@ -4,14 +4,14 @@
 
 int lookupBundle(NSString *bundleId)
 {
-  NSString *path = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:bundleId];
+  NSURL *url = [[NSWorkspace sharedWorkspace] URLForApplicationWithBundleIdentifier:bundleId];
 
-  if (path == NULL) {
+  if (url == NULL) {
     fprintf(stderr, "Application with bundle id '%s' not found!\n", [bundleId UTF8String]);
     return 1;
   }
 
-  printf("%s\n", [path UTF8String]);
+  printf("%s\n", [url.path UTF8String]);
   return 0;
 }
 
