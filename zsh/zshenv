@@ -11,6 +11,7 @@ typeset -U path
 path=( ~/.nodenv/bin(N)
        ~/.local/bin(N)
        ~/bin(N)
+       /opt/homebrew/{,s}bin(N)
        /usr/local/{,s}bin(N)
        /usr/{,s}bin(N)
        /{,s}bin(N)
@@ -61,12 +62,7 @@ dot () {
 
 # Homebrew
 if which brew >/dev/null; then
-  BREW_PREFIX=$(brew --prefix)
-
-  path=(
-    $path
-  )
-  fpath=($BREW_PREFIX/share/zsh-completions $fpath)
+  eval $(brew shellenv | grep -v '\bPATH=')
 
   # autoenv
   dot "$BREW_PREFIX/opt/autoenv/activate.sh"
