@@ -69,15 +69,15 @@ if which brew >/dev/null; then
   eval $(brew shellenv | grep -v '\bPATH=')
 
   # autoenv
-  dot "$BREW_PREFIX/opt/autoenv/activate.sh"
+  dot "$HOMEBREW_PREFIX/opt/autoenv/activate.sh"
   # chruby
-  dot "$BREW_PREFIX/opt/chruby/share/chruby/chruby.sh"
+  dot "$HOMEBREW_PREFIX/opt/chruby/share/chruby/chruby.sh"
   chruby ruby 2>/dev/null
 
   # pkg-config
   typeset -T PKG_CONFIG_PATH pkg_config_path
   typeset -U pkg_config_path
-  pkg_config_path=( $BREW_PREFIX/{lib,share}/pkgconfig(/N) $pkg_config_path )
+  pkg_config_path=( $HOMEBREW_PREFIX/{lib,share}/pkgconfig(/N) $pkg_config_path )
   export PKG_CONFIG_PATH
 fi
 
