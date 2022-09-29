@@ -27,6 +27,10 @@ export EMAIL="Nick Stenning <nick@whiteink.com>"
 # Editor
 export EDITOR="vim"
 export VISUAL="vim"
+if which nvim >/dev/null 2>&1; then
+  export EDITOR="nvim"
+  export VISUAL="nvim"
+fi
 export TEXEDIT="${EDITOR} +%d %s"
 export LESSEDIT="${EDITOR} ?lm+%lm. %f"
 export PAGER="less"
