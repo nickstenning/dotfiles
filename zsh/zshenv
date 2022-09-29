@@ -70,8 +70,6 @@ if which brew >/dev/null; then
 
   # autoenv
   dot "$BREW_PREFIX/opt/autoenv/activate.sh"
-  # virtualenv
-  dot "$BREW_PREFIX/bin/virtualenvwrapper_lazy.sh"
   # chruby
   dot "$BREW_PREFIX/opt/chruby/share/chruby/chruby.sh"
   chruby ruby 2>/dev/null
@@ -81,6 +79,11 @@ if which brew >/dev/null; then
   typeset -U pkg_config_path
   pkg_config_path=( $BREW_PREFIX/{lib,share}/pkgconfig(/N) $pkg_config_path )
   export PKG_CONFIG_PATH
+fi
+
+# virtualenv
+if which virtualenvwrapper_lazy.sh >/dev/null; then
+  . "virtualenvwrapper_lazy.sh"
 fi
 
 # Debian
