@@ -4,7 +4,10 @@
 	ca = commit -av
 	ci = commit -v
 	cim = commit -v -m
-	cleanup = !git branch --merged | fgrep -v '*' | fgrep -v 'master' | xargs -n1 git branch -d
+	rprune = remote prune --dry-run origin
+	rprunef = remote prune origin
+	cleanup = !echo DRY RUN: taking no action... && git branch -vv | grep ': gone' | awk '{print $1}' | grep -E -v 'master|main'
+	cleanupf = !git branch -vv | grep ': gone' | awk '{print $1}' | grep -E -v 'master|main' | xargs -r git br -D
 	co = checkout
 	d = diff
 	ds = diff --stat
