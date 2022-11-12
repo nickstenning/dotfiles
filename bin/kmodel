@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ $# -eq 1 ]; then
+  versionid=$(cut -c 1-8 <<< "$1")
+else
+  echo "Usage: kmodel <version>" >&2
+  exit 1
+fi
+
+exec jq -c 'select(
+  .metadata.labels["replicate/role"] == "model" and 
+  (.metadata.labels["replicate/model-label"] | startswith("model-'"$versionid"'"))
+)'

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ ! -t 0 ]; then
+  pods=$(jq -rs '[.[].metadata.name] | join("|")')
+fi
+
+exec stern \
+  -A \
+  --template '{{color .PodColor .PodName}} {{.Message}}{{"\n"}}' \
+  --since 5m \
+  "$@" \
+  $pods
