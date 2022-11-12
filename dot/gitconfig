@@ -45,6 +45,7 @@
 	rebase = true
 [push]
 	default = upstream
+	autoSetupRemote = true
 [log]
 	date = iso
 	abbrevCommit = true
@@ -62,3 +63,5 @@
 # Include any local config overrides
 [include]
 	path = ~/.localgitconfig
+[commit]
+	gpgsign = true
