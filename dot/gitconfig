@@ -36,6 +36,8 @@
 	ui = auto
 [color "status"]
 	changed = yellow
+[commit]
+	gpgsign = true
 [core]
 	excludesfile = ~/.gitignore
 	whitespace = fix
@@ -63,5 +65,3 @@
 # Include any local config overrides
 [include]
 	path = ~/.localgitconfig
-[commit]
-	gpgsign = true
