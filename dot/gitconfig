@@ -41,8 +41,13 @@
 [core]
 	excludesfile = ~/.gitignore
 	whitespace = fix
+	pager = delta
 [diff]
 	compactionHeuristic = true
+	algorithm = histogram
+	colorMoved = default
+[interactive]
+	diffFilter = delta --color-only
 [pull]
 	rebase = true
 [push]
@@ -52,6 +57,8 @@
 	date = iso
 	abbrevCommit = true
 	decorate = short
+[merge]
+	conflictstyle = diff3
 [rebase]
 	autoStash = true
 [status]
@@ -61,6 +68,17 @@
 	name = Nick Stenning
 	email = nick@whiteink.com
 	signingkey = nick@whiteink.com
+
+[delta]
+	features = side-by-side line-numbers hyperlinks navigate decorations
+[delta "decorations"]
+	commit-decoration-style = bold yellow box ul
+	file-style = bold magenta
+	file-decoration-style = magenta ul
+	hunk-header-decoration-style = blue ul
+[delta "line-numbers"]
+	line-numbers-left-style = "#333333"
+	line-numbers-right-style = "#333333"
 
 # Include any local config overrides
 [include]
