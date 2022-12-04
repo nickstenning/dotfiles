@@ -1,0 +1,13 @@
+#!/bin/bash
+
+safe_contexts=(kind-local-serving)
+context=$(kubectl config current-context)
+
+for c in "${safe_contexts[@]}"; do
+  if [ "$c" = "$context" ]; then
+    exec kubectl "$@"
+  fi
+done
+
+echo "Current context is $context: refusing to execute!" >&2
+exit 1

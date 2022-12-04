@@ -92,6 +92,7 @@ fi
 dot ~/src/google-cloud-sdk/path.zsh.inc
 dot ~/src/google-cloud-sdk/completion.zsh.inc
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+alias kubectl=safekubectl
 
 # Heroku
 dot ~/Library/Caches/heroku/autocomplete/zsh_setup
