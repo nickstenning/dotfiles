@@ -9,6 +9,7 @@ setopt noglobalrcs
 # Set path to contain only unique elements, and then set a sensible default.
 typeset -U path
 path=( ~/.nodenv/bin(N)
+       ~/.cargo/bin(N)
        ~/.local/bin(N)
        ~/bin(N)
        /opt/homebrew/{,s}bin(N)
