@@ -68,7 +68,7 @@ dot () {
 # Homebrew
 if which brew >/dev/null; then
   eval $(brew shellenv | grep -v '\bPATH=')
-  export HOMEBREW_FORCE_BREWED_CURL=1
+  fpath=( $HOMEBREW_PREFIX/share/zsh/site-functions $fpath )
 
   # autoenv
   dot "$HOMEBREW_PREFIX/opt/autoenv/activate.sh"
@@ -92,7 +92,6 @@ fi
 dot ~/src/google-cloud-sdk/path.zsh.inc
 dot ~/src/google-cloud-sdk/completion.zsh.inc
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
-alias kubectl=safekubectl
 
 # Heroku
 dot ~/Library/Caches/heroku/autocomplete/zsh_setup
