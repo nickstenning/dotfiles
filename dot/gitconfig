@@ -42,6 +42,9 @@
 	excludesfile = ~/.gitignore
 	whitespace = fix
 	pager = delta
+[credential]
+	# `brew install --cask git-credential-manager`
+	helper = /usr/local/bin/git-credential-manager
 [diff]
 	compactionHeuristic = true
 	algorithm = histogram
