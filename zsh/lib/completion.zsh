@@ -7,8 +7,6 @@ WORDCHARS="*?_-.[]~&;$%^+"
 
 zmodload -i zsh/complist
 
-# case-insensitive (all),partial-word and then substring completion
-zstyle ':completion:*' matcher-list 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 zstyle ':completion:*' list-colors ${LS_COLORS}
 
 # disable named-directories autocompletion
