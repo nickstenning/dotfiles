@@ -33,3 +33,6 @@ zstyle '*' single-ignored show
 
 compdef pkill=killall
 compdef hub=git
+
+# fzf
+dot "$HOMEBREW_PREFIX/opt/fzf/shell/completion.zsh"

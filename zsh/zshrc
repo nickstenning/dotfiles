@@ -20,6 +20,3 @@ for file ($ZSH/lib/*.zsh(.xN)) source $file
 if which keychain >/dev/null; then
   eval $(keychain -Q -q --eval --agents ssh --ignore-missing --timeout 43200 $(hostname -s) id_rsa)
 fi
-
-# z
-dot "$BREW_PREFIX/etc/profile.d/z.sh"

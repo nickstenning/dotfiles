@@ -52,6 +52,10 @@ export PIP_REQUIRE_VIRTUALENV=true
 export VIRTUALENV_USE_DISTRIBUTE="yes"
 export VIRTUAL_ENV_DISABLE_PROMPT=1 # we do our own prompt adjustment
 
+# fzf
+export FZF_DEFAULT_COMMAND="rg --files --hidden --glob='!.git/*'"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND \$dir"
+
 # Go
 export GOPATH="$HOME"
 
