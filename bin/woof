@@ -178,7 +178,7 @@ class FileServHTTPRequestHandler (BaseHTTPServer.BaseHTTPRequestHandler):
       for suffix in ["", ".1", ".2", ".3", ".4", ".5", ".6", ".7", ".8", ".9"]:
          destfilename = os.path.join (".", upfilename + suffix)
          try:
-            destfile = os.open (destfilename, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0644)
+            destfile = os.open (destfilename, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
             break
          except OSError, e:
             if e.errno == errno.EEXIST:
@@ -460,7 +460,7 @@ def woof_client (url):
    destfilename = os.path.join (".", fname)
    try:
       destfile = os.open (destfilename,
-                          os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0644)
+                          os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
    except OSError, e:
       if e.errno == errno.EEXIST:
          override = raw_input ("File exists. Overwrite (y/n)? ")
@@ -470,13 +470,13 @@ def woof_client (url):
 
    if destfile == None:
       if override == True:
-         destfile = os.open (destfilename, os.O_WRONLY | os.O_CREAT, 0644)
+         destfile = os.open (destfilename, os.O_WRONLY | os.O_CREAT, 0o644)
       else:
          for suffix in [".1", ".2", ".3", ".4", ".5", ".6", ".7", ".8", ".9"]:
             destfilename = os.path.join (".", fname + suffix)
             try:
                destfile = os.open (destfilename,
-                                   os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0644)
+                                   os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
                break
             except OSError, e:
                if e.errno == errno.EEXIST:
