@@ -74,11 +74,9 @@ if which brew >/dev/null; then
   eval $(brew shellenv | grep -v '\bPATH=')
   fpath=( $HOMEBREW_PREFIX/share/zsh/site-functions $fpath )
 
-  # autoenv
-  dot "$HOMEBREW_PREFIX/opt/autoenv/activate.sh"
-  # chruby
-  dot "$HOMEBREW_PREFIX/opt/chruby/share/chruby/chruby.sh"
-  chruby ruby 2>/dev/null
+  # asdf
+  dot "$HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh"
+  dot "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
 
   # pkg-config
   typeset -T PKG_CONFIG_PATH pkg_config_path
@@ -103,10 +101,6 @@ dot ~/Library/Caches/heroku/autocomplete/zsh_setup
 # Debian
 if [ "$(lsb_release -is 2>/dev/null)" = "Debian" ]; then
   dot /usr/share/virtualenvwrapper/virtualenvwrapper_lazy.sh
-fi
-
-if which nodenv >/dev/null; then
-  eval "$(nodenv init -)"
 fi
 
 WHEEL_TOOL=$(which wheel)
