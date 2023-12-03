@@ -2,10 +2,6 @@
 
 ZSH=$HOME/src/dotfiles/zsh
 
-# Report timing statistics for long-running processes
-REPORTTIME=5
-TIMEFMT="%J  %U user %S system %P cpu %MM memory %*E total"
-
 # Load and run compinit
 autoload -U compinit
 compinit -i
