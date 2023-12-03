@@ -3,8 +3,9 @@
 ZSH=$HOME/src/dotfiles/zsh
 
 # Load and run compinit
+mkdir -p ~/.cache/zsh
 autoload -U compinit
-compinit -i
+compinit -i -d ~/.cache/zsh/zcompdump-$ZSH_VERSION
 
 # allow adding hooks in main files
 autoload -U add-zsh-hook
