@@ -2,12 +2,6 @@ cdr () {
   cd "$(git rev-parse --show-toplevel)"
 }
 
-dockerclean () {
-  docker rm $(docker ps -aq 2>/dev/null) 2>/dev/null
-  docker rm -v $(docker ps --filter status=exited -q 2>/dev/null) 2>/dev/null
-  docker rmi $(docker images --filter dangling=true -q 2>/dev/null) 2>/dev/null
-}
-
 ducks () {
   if ! which gsort >/dev/null; then
     echo "no gsort... install coreutils first" >&2
@@ -43,14 +37,6 @@ mess () {
   cd ~/mess/current
 }
 
-pathadd () {
-  path=("$1" $path)
-}
-
-pathrm () {
-  path[$path[(i)$1]]=()
-}
-
 # Powerful mv workalike.
 autoload -U zmv
 alias zmv="noglob zmv"
@@ -83,8 +69,6 @@ alias la="ls -A"
 alias lal="la -l"
 alias lalh="lal -h"
 
-alias be="bundle exec"
-alias bi="bundle install --path=.bundle"
 alias d="dirs -v"
 alias dc="dc -f ~/.dcinit -f -"
 alias dcurl="curl -s -D- -o/dev/null"
@@ -94,15 +78,11 @@ alias grep="grep --colour"
 alias h="head -n $(( +LINES ? LINES - 4 : 20 ))"
 alias ipy="python3 -m ipython --no-banner 2>/dev/null || ipython --no-banner"
 alias notrail="sed -Ee 's/[ 	]+$//'  -i ''"
-alias pm="python manage.py"
-alias pmm="python manage.py syncdb --migrate"
 alias psg="ps auxwww | head -n 1; ps auxwww | grep -Ei"
-alias pyclean="find . -name '*.pyc' -delete -or -name '__pycache__' -delete"
 alias reload="exec $SHELL"
 alias rm="rm -i"
 alias sudo="command sudo " # this trailing space checks next word for aliases
 alias t="tail -n $(( +LINES ? LINES - 4 : 20 ))"
-alias webserver="python -m SimpleHTTPServer 8000"
 
 alias -g ...=../..
 alias -g ....=../../..
