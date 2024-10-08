@@ -95,9 +95,6 @@ dot ~/src/google-cloud-sdk/path.zsh.inc
 dot ~/src/google-cloud-sdk/completion.zsh.inc
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
-# Heroku
-dot ~/Library/Caches/heroku/autocomplete/zsh_setup
-
 # Debian
 if [ "$(lsb_release -is 2>/dev/null)" = "Debian" ]; then
   dot /usr/share/virtualenvwrapper/virtualenvwrapper_lazy.sh
