@@ -10,6 +10,7 @@ setopt noglobalrcs
 typeset -U path
 path=( ~/.cargo/bin(N)
        ~/.local/bin(N)
+       ~/.krew/bin(N)
        ~/bin(N)
        /opt/homebrew/{,s}bin(N)
        /usr/local/{,s}bin(N)
