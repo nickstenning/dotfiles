@@ -14,8 +14,8 @@ autoload -U add-zsh-hook
 for file ($ZSH/lib/*.zsh(.xN)) source $file
 
 # load keychain
-if which keychain >/dev/null; then
-  eval $(keychain -Q -q --eval --agents ssh --ignore-missing --timeout 43200 $(hostname -s) id_rsa)
+if [ "$(uname -s)" = Darwin ] && [ -f ~/.ssh/$(hostname -s) ]; then
+  ssh-add -q --apple-use-keychain ~/.ssh/$(hostname -s)
 fi
 
 if command -v atuin &> /dev/null; then
