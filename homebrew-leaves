@@ -33,6 +33,4 @@ tmux
 tree
 universal-ctags
 uv
-virtualenv
-virtualenvwrapper
 watch
